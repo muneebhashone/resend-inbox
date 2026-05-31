@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resend Inbox
 
-## Getting Started
+A minimal personal inbox for [Resend](https://resend.com) that lets you receive, read, thread, and reply to emails on your custom domain — with a configurable HTML signature.
 
-First, run the development server:
+Built with Next.js 16, Turso (libSQL), and the Resend SDK.
+
+## Features
+
+- Receive inbound emails via Resend webhooks
+- Sync/backfill emails from the Resend Receiving API
+- Threaded conversation view
+- Reply, reply-all, and compose new emails
+- Configurable HTML signature appended to every outbound message
+- Proper email threading via `In-Reply-To` and `References` headers
+- Password-protected single-user access
+- Attachment download links for received emails
+
+## Prerequisites
+
+- A [Resend](https://resend.com) account with a verified domain
+- Inbound (receiving) enabled on your domain — see [Receiving emails](https://resend.com/docs/dashboard/receiving/introduction)
+- A [Turso](https://turso.tech) database (free tier works)
+
+## Setup
+
+### 1. Clone and install
+
+```bash
+npm install
+cp .env.example .env.local
+```
+
+### 2. Configure environment variables
+
+```env
+RESEND_API_KEY=re_...
+RESEND_WEBHOOK_SECRET=whsec_...
+TURSO_DATABASE_URL=libsql://your-db.turso.io
+TURSO_AUTH_TOKEN=...
+INBOX_PASSWORD=your-secret-password
+SESSION_SECRET=random-32-char-string-at-least
+```
+
+For local development without Turso, you can use:
+
+```env
+TURSO_DATABASE_URL=file:local.db
+```
+
+### 3. Push the database schema
+
+```bash
+npm run db:push
+```
+
+### 4. Configure Resend
+
+1. **Receiving** — Ensure MX records are set for your domain (or a subdomain like `mail.yourdomain.com`).
+2. **Webhook** — In the Resend dashboard, add a webhook:
+   - URL: `https://your-app.vercel.app/api/webhooks/resend`
+   - Event: `email.received`
+   - Copy the signing secret to `RESEND_WEBHOOK_SECRET`
+3. **Sending** — Use a verified `from` address on the same domain in Settings after first login.
+
+### 5. Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+For local webhook testing, expose your dev server with [ngrok](https://ngrok.com) or the [Resend CLI](https://resend.com/docs/cli):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+ngrok http 3000
+# Use the ngrok URL as your webhook endpoint
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy to Vercel
 
-## Learn More
+1. Push the repo to GitHub
+2. Import the project in [Vercel](https://vercel.com)
+3. Add all environment variables from `.env.example`
+4. Deploy
+5. Update the Resend webhook URL to your production domain
 
-To learn more about Next.js, take a look at the following resources:
+## Usage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Open the app and sign in with `INBOX_PASSWORD`
+2. Go to **Settings** and set your from name, from email, and HTML signature
+3. Click **Sync from Resend** to import existing received emails
+4. Select a thread to read and reply — your signature is appended automatically
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run db:push` | Push schema to Turso |
+| `npm run db:studio` | Open Drizzle Studio |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Architecture
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+Resend webhook → /api/webhooks/resend → fetch full email → Turso DB
+Inbox UI → /api/emails/send → Resend Send API (with signature + thread headers)
+```
+
+## License
+
+MIT
