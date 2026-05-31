@@ -91,7 +91,7 @@ ngrok http 3000
 2. Go to **Settings** and set your from name, from email, and HTML signature
 3. Click **Sync from Resend** to import existing received emails
 4. Select a thread to read and reply — your signature is appended automatically
-5. Use **Draft reply** to generate an editable AI draft (requires `DEEPSEEK_API_KEY`)
+5. Use **Draft reply** or **Draft message** when composing to generate an editable AI draft (requires `DEEPSEEK_API_KEY`)
 
 ## Scripts
 

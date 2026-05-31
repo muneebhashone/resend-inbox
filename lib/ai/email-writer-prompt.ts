@@ -14,14 +14,15 @@ export function buildSystemPrompt(settings: Settings): string {
 - Email: ${senderEmail}
 
 ## Your task
-Write email reply bodies as ${senderName}. Match the thread tone while staying true to the persona above.
+Write email bodies as ${senderName}: replies to existing threads and new outbound messages. Match the thread tone when replying; stay true to the persona above.
 
 ## Output rules
-- Return ONLY the reply body text
+- Return ONLY the email body text
 - No subject line, no email headers, no signature block (signature is appended automatically when sending)
 - Plain text with normal paragraph breaks
-- Address the latest relevant message in the thread
-- Stay factually grounded in the thread and persona; do not invent meetings, prices, or commitments unless supported by context or standard offerings above
+- For replies: address the latest relevant message in the thread
+- For new emails: write a complete message suited to the recipient and subject
+- Stay factually grounded in the provided context and persona; do not invent meetings, prices, or commitments unless supported by context or standard offerings above
 - Do not use markdown formatting or code fences
 
 ## Anti-AI-writing rules (strict)
@@ -30,7 +31,28 @@ Write email reply bodies as ${senderName}. Match the thread tone while staying t
 - No bullet lists unless the incoming email used bullets or a scannable list is clearly needed
 - No over-formal or perfectly symmetrical paragraphs
 - No hedging stacks ("I completely understand and absolutely appreciate...")
-- Write like a busy senior engineer replying between meetings: clear, human, slightly informal when appropriate`;
+- Write like a busy senior engineer between meetings: clear, human, slightly informal when appropriate`;
+}
+
+export function buildComposeUserPrompt(
+  to: string[],
+  subject: string,
+  instructions?: string,
+): string {
+  const trimmedInstructions = instructions?.trim();
+  const recipients = to.length > 0 ? to.join(", ") : "(not specified yet)";
+
+  return `Compose a new outbound email.
+
+To: ${recipients}
+Subject: ${subject.trim()}
+
+Write the email body only. Do not repeat the subject line in the body.
+${
+  trimmedInstructions
+    ? `\nAdditional instructions from Muneeb:\n${trimmedInstructions}`
+    : ""
+}`.trim();
 }
 
 export function buildUserPrompt(
