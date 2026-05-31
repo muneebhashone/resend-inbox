@@ -10,6 +10,7 @@ Built with Next.js 16, Turso (libSQL), and the Resend SDK.
 - Sync/backfill emails from the Resend Receiving API
 - Threaded conversation view
 - Reply, reply-all, and compose new emails
+- AI-assisted reply drafting (DeepSeek via Vercel AI SDK)
 - Configurable HTML signature appended to every outbound message
 - Proper email threading via `In-Reply-To` and `References` headers
 - Password-protected single-user access
@@ -39,6 +40,7 @@ TURSO_DATABASE_URL=libsql://your-db.turso.io
 TURSO_AUTH_TOKEN=...
 INBOX_PASSWORD=your-secret-password
 SESSION_SECRET=random-32-char-string-at-least
+DEEPSEEK_API_KEY=sk-...
 ```
 
 For local development without Turso, you can use:
@@ -89,6 +91,7 @@ ngrok http 3000
 2. Go to **Settings** and set your from name, from email, and HTML signature
 3. Click **Sync from Resend** to import existing received emails
 4. Select a thread to read and reply — your signature is appended automatically
+5. Use **Draft reply** to generate an editable AI draft (requires `DEEPSEEK_API_KEY`)
 
 ## Scripts
 
