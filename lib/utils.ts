@@ -21,6 +21,37 @@ export function makeSnippet(html: string | null, text: string | null): string {
   return source.slice(0, 120);
 }
 
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+const HTML_BLOCK_TAG =
+  /<\/?(p|div|br|ul|ol|li|table|tr|td|blockquote|h[1-6]|pre|hr|img|a|span|strong|em|b|i)\b[^>]*>/i;
+
+/** Turn a plain-text body (blank-line paragraphs, single-line breaks) into HTML. */
+export function plainTextToHtml(value: string): string {
+  return value
+    .replace(/\r\n/g, "\n")
+    .trim()
+    .split(/\n{2,}/)
+    .map(
+      (paragraph) =>
+        `<p>${escapeHtml(paragraph).replace(/\n/g, "<br/>")}</p>`,
+    )
+    .join("");
+}
+
+/** Leave real HTML alone; convert plain text so formatting survives sending. */
+export function normalizeBodyHtml(value: string): string {
+  const body = value.trim();
+  if (!body) return "";
+  return HTML_BLOCK_TAG.test(body) ? body : plainTextToHtml(body);
+}
+
 export function ensureRePrefix(subject: string): string {
   return /^re:/i.test(subject.trim()) ? subject : `Re: ${subject}`;
 }

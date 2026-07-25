@@ -8,7 +8,12 @@ import {
   computeThreadId,
   generateMessageId,
 } from "@/lib/threading";
-import { ensureRePrefix, makeSnippet, parseJsonArray } from "@/lib/utils";
+import {
+  ensureRePrefix,
+  makeSnippet,
+  normalizeBodyHtml,
+  parseJsonArray,
+} from "@/lib/utils";
 
 type SendEmailInput = {
   to: string[];
@@ -28,10 +33,9 @@ export async function sendEmail(input: SendEmailInput) {
     throw new Error("Configure your from email in Settings before sending");
   }
 
-  const signature = config.signatureHtml.trim();
-  const bodyHtml = signature
-    ? `${input.bodyHtml}<br/><br/>${signature}`
-    : input.bodyHtml;
+  const signature = normalizeBodyHtml(config.signatureHtml);
+  const body = normalizeBodyHtml(input.bodyHtml);
+  const bodyHtml = signature ? `${body}<br/>${signature}` : body;
 
   let to = input.to;
   let cc = input.cc ?? [];
