@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import { MarkdownEditor } from "@/components/inbox/markdown-editor";
 import type { Email } from "@/lib/types";
 
 export type ComposerMode = "reply" | "reply-all" | "forward";
@@ -40,7 +41,7 @@ function ReplyComposerForm({
 }: ReplyComposerProps) {
   const [to, setTo] = useState("");
   const [subject, setSubject] = useState("");
-  const [bodyHtml, setBodyHtml] = useState("");
+  const [body, setBody] = useState("");
   const [instructions, setInstructions] = useState("");
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
@@ -56,12 +57,12 @@ function ReplyComposerForm({
           ? latestEmail.subject
           : `Fwd: ${latestEmail.subject || "(no subject)"}`,
       );
-      setBodyHtml(buildForwardBody(latestEmail));
+      setBody(buildForwardBody(latestEmail));
       setExpanded(true);
     } else {
       setTo("");
       setSubject("");
-      setBodyHtml("");
+      setBody("");
       setExpanded(false);
     }
     setInstructions("");
@@ -75,7 +76,7 @@ function ReplyComposerForm({
       return;
     }
 
-    if (bodyHtml.trim()) {
+    if (body.trim()) {
       const confirmed = window.confirm(
         "Replace your current reply with an AI draft?",
       );
@@ -103,13 +104,13 @@ function ReplyComposerForm({
     }
 
     const data = (await response.json()) as { bodyText: string };
-    setBodyHtml(data.bodyText);
+    setBody(data.bodyText);
     setDrafting(false);
   }
 
   async function handleSubmit(event?: FormEvent) {
     event?.preventDefault();
-    if (!bodyHtml.trim()) return;
+    if (!body.trim()) return;
 
     if (mode === "forward") {
       const recipients = to
@@ -130,12 +131,12 @@ function ReplyComposerForm({
         ? {
             to: to.split(",").map((value) => value.trim()).filter(Boolean),
             subject,
-            bodyHtml,
+            bodyHtml: body,
             replyToEmailId: emailId,
             mode: "forward" as const,
           }
         : {
-            bodyHtml,
+            bodyHtml: body,
             replyToEmailId: emailId,
             mode,
           };
@@ -231,20 +232,18 @@ function ReplyComposerForm({
           </div>
         ) : null}
 
-        <textarea
-          ref={textareaRef}
-          value={bodyHtml}
-          onChange={(event) => setBodyHtml(event.target.value)}
-          onKeyDown={(event) => {
-            if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-              event.preventDefault();
-              void handleSubmit();
-            }
-          }}
-          rows={expanded ? 10 : 4}
-          placeholder={mode === "forward" ? "Add a note..." : "Write your reply..."}
+        <MarkdownEditor
+          value={body}
+          onChange={setBody}
           disabled={disabled || busy}
-          className="w-full resize-y rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          rows={expanded ? 10 : 5}
+          textareaRef={textareaRef}
+          onSubmit={() => void handleSubmit()}
+          placeholder={
+            mode === "forward"
+              ? "Add a note in Markdown…"
+              : "Write your reply in Markdown…"
+          }
         />
 
         {signatureHtml && expanded ? (
@@ -265,8 +264,8 @@ function ReplyComposerForm({
           <p className="text-[11px] text-zinc-400">⌘/Ctrl + Enter to send</p>
           <button
             type="submit"
-            disabled={disabled || busy || !bodyHtml.trim()}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+            disabled={disabled || busy || !body.trim()}
+            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white disabled:opacity-50 hover:bg-blue-700"
           >
             {sending ? "Sending..." : "Send"}
           </button>

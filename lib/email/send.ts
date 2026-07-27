@@ -8,6 +8,7 @@ import {
   computeThreadId,
   generateMessageId,
 } from "@/lib/threading";
+import { bodyToEmailHtml } from "@/lib/markdown";
 import {
   ensureRePrefix,
   makeSnippet,
@@ -34,7 +35,7 @@ export async function sendEmail(input: SendEmailInput) {
   }
 
   const signature = normalizeBodyHtml(config.signatureHtml);
-  const body = normalizeBodyHtml(input.bodyHtml);
+  const body = bodyToEmailHtml(input.bodyHtml);
   const bodyHtml = signature ? `${body}<br/>${signature}` : body;
 
   let to = input.to;

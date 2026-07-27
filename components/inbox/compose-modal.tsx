@@ -1,6 +1,7 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { MarkdownEditor } from "@/components/inbox/markdown-editor";
 
 type ComposeModalProps = {
   open: boolean;
@@ -9,6 +10,8 @@ type ComposeModalProps = {
   onSent: () => void;
 };
 
+type ComposeSize = "default" | "expanded" | "minimized";
+
 export function ComposeModal({
   open,
   signatureHtml,
@@ -16,21 +19,67 @@ export function ComposeModal({
   onSent,
 }: ComposeModalProps) {
   const [to, setTo] = useState("");
+  const [cc, setCc] = useState("");
+  const [bcc, setBcc] = useState("");
+  const [showCc, setShowCc] = useState(false);
+  const [showBcc, setShowBcc] = useState(false);
   const [subject, setSubject] = useState("");
-  const [bodyHtml, setBodyHtml] = useState("");
+  const [body, setBody] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [showAi, setShowAi] = useState(false);
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
   const [error, setError] = useState("");
+  const [size, setSize] = useState<ComposeSize>("default");
   const toRef = useRef<HTMLInputElement>(null);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (open) {
+      setSize("default");
       requestAnimationFrame(() => toRef.current?.focus());
     }
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (size === "expanded") setSize("default");
+        else setSize("minimized");
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [open, size]);
+
   if (!open) return null;
+
+  const busy = sending || drafting;
+  const hasDraft = Boolean(to || cc || bcc || subject || body || instructions);
+
+  function reset() {
+    setTo("");
+    setCc("");
+    setBcc("");
+    setShowCc(false);
+    setShowBcc(false);
+    setSubject("");
+    setBody("");
+    setInstructions("");
+    setShowAi(false);
+    setError("");
+    setSize("default");
+  }
+
+  function handleClose() {
+    if (hasDraft && !window.confirm("Discard this draft?")) return;
+    reset();
+    onClose();
+  }
 
   async function handleDraft() {
     if (!subject.trim()) {
@@ -38,7 +87,7 @@ export function ComposeModal({
       return;
     }
 
-    if (bodyHtml.trim()) {
+    if (body.trim()) {
       const confirmed = window.confirm(
         "Replace your current message with an AI draft?",
       );
@@ -66,12 +115,18 @@ export function ComposeModal({
     }
 
     const data = (await response.json()) as { bodyText: string };
-    setBodyHtml(data.bodyText);
+    setBody(data.bodyText);
     setDrafting(false);
+    requestAnimationFrame(() => bodyRef.current?.focus());
   }
 
   async function handleSubmit(event?: FormEvent) {
     event?.preventDefault();
+    if (!to.trim() || !subject.trim() || !body.trim()) {
+      setError("To, subject, and message are required");
+      return;
+    }
+
     setSending(true);
     setError("");
 
@@ -80,8 +135,10 @@ export function ComposeModal({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         to: to.split(",").map((value) => value.trim()).filter(Boolean),
+        cc: cc.split(",").map((value) => value.trim()).filter(Boolean),
+        bcc: bcc.split(",").map((value) => value.trim()).filter(Boolean),
         subject,
-        bodyHtml,
+        bodyHtml: body,
         mode: "compose",
       }),
     });
@@ -93,133 +150,234 @@ export function ComposeModal({
       return;
     }
 
-    setTo("");
-    setSubject("");
-    setBodyHtml("");
-    setInstructions("");
+    reset();
     setSending(false);
     onSent();
     onClose();
   }
 
-  const busy = sending || drafting;
+  if (size === "minimized") {
+    return (
+      <div className="fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-200 bg-zinc-900 text-white shadow-2xl dark:border-zinc-700">
+        <button
+          type="button"
+          onClick={() => setSize("default")}
+          className="flex w-full items-center justify-between px-4 py-3 text-left text-sm"
+        >
+          <span className="truncate font-medium">
+            {subject.trim() || "New Message"}
+          </span>
+          <span className="flex items-center gap-1">
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={(event) => {
+                event.stopPropagation();
+                handleClose();
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.stopPropagation();
+                  handleClose();
+                }
+              }}
+              className="rounded px-1.5 py-0.5 hover:bg-white/10"
+              aria-label="Close"
+            >
+              ×
+            </span>
+          </span>
+        </button>
+      </div>
+    );
+  }
+
+  const expanded = size === "expanded";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl dark:bg-zinc-950">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Compose</h2>
-          <button
-            type="button"
-            onClick={onClose}
+    <div
+      className={`fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-950 ${
+        expanded
+          ? "inset-3 rounded-xl sm:inset-6"
+          : "bottom-0 right-0 w-full rounded-t-xl sm:bottom-0 sm:right-4 sm:w-[560px] sm:rounded-t-xl"
+      }`}
+      style={expanded ? undefined : { maxHeight: "min(640px, calc(100dvh - 1rem))" }}
+    >
+      <div className="flex shrink-0 items-center gap-2 bg-zinc-900 px-3 py-2 text-white dark:bg-zinc-800">
+        <h2 className="min-w-0 flex-1 truncate text-sm font-medium">
+          {subject.trim() || "New Message"}
+        </h2>
+        <button
+          type="button"
+          onClick={() => setSize("minimized")}
+          disabled={busy}
+          className="rounded px-2 py-1 text-xs hover:bg-white/10"
+          aria-label="Minimize"
+        >
+          —
+        </button>
+        <button
+          type="button"
+          onClick={() => setSize(expanded ? "default" : "expanded")}
+          disabled={busy}
+          className="rounded px-2 py-1 text-xs hover:bg-white/10"
+          aria-label={expanded ? "Restore" : "Expand"}
+        >
+          {expanded ? "⌟⌜" : "⌜⌟"}
+        </button>
+        <button
+          type="button"
+          onClick={handleClose}
+          disabled={busy}
+          className="rounded px-2 py-1 text-xs hover:bg-white/10"
+          aria-label="Close"
+        >
+          ×
+        </button>
+      </div>
+
+      <form
+        onSubmit={(event) => void handleSubmit(event)}
+        className="flex min-h-0 flex-1 flex-col"
+      >
+        <div className="shrink-0 divide-y divide-zinc-100 dark:divide-zinc-900">
+          <RecipientRow
+            label="To"
+            value={to}
+            onChange={setTo}
+            inputRef={toRef}
             disabled={busy}
-            className="rounded-md px-2 py-1 text-sm text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-900"
-          >
-            Close
-          </button>
+            required
+            trailing={
+              <div className="flex gap-2 text-xs text-zinc-500">
+                {!showCc ? (
+                  <button type="button" onClick={() => setShowCc(true)} className="hover:text-zinc-800 dark:hover:text-zinc-200">
+                    Cc
+                  </button>
+                ) : null}
+                {!showBcc ? (
+                  <button type="button" onClick={() => setShowBcc(true)} className="hover:text-zinc-800 dark:hover:text-zinc-200">
+                    Bcc
+                  </button>
+                ) : null}
+              </div>
+            }
+          />
+          {showCc ? (
+            <RecipientRow label="Cc" value={cc} onChange={setCc} disabled={busy} />
+          ) : null}
+          {showBcc ? (
+            <RecipientRow label="Bcc" value={bcc} onChange={setBcc} disabled={busy} />
+          ) : null}
+          <RecipientRow
+            label="Subject"
+            value={subject}
+            onChange={setSubject}
+            disabled={busy}
+            required
+          />
         </div>
 
-        <form
-          onSubmit={(event) => void handleSubmit(event)}
-          className="space-y-4"
-        >
-          <div>
-            <label className="mb-1 block text-sm font-medium">To</label>
-            <input
-              ref={toRef}
-              value={to}
-              onChange={(event) => setTo(event.target.value)}
-              placeholder="recipient@example.com, another@example.com"
-              disabled={busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Subject</label>
-            <input
-              value={subject}
-              onChange={(event) => setSubject(event.target.value)}
-              disabled={busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
-              required
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Notes for draft
-            </label>
-            <input
-              type="text"
-              value={instructions}
-              onChange={(event) => setInstructions(event.target.value)}
-              placeholder="e.g. follow up on discovery call, suggest booking next week"
-              disabled={busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
-            />
-          </div>
-          <div>
-            <div className="mb-1 flex items-center justify-between">
-              <label className="block text-sm font-medium">Message</label>
+        <div className="flex min-h-0 flex-1 flex-col gap-2 p-3">
+          <MarkdownEditor
+            value={body}
+            onChange={setBody}
+            disabled={busy}
+            rows={expanded ? 18 : 10}
+            textareaRef={bodyRef}
+            onSubmit={() => void handleSubmit()}
+            className="min-h-0 flex-1"
+            placeholder="Write your message in Markdown… Paste Markdown to auto-format."
+          />
+
+          {showAi ? (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={instructions}
+                onChange={(event) => setInstructions(event.target.value)}
+                placeholder="Notes for AI draft (tone, points to cover…)"
+                disabled={busy}
+                className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              />
               <button
                 type="button"
                 onClick={() => void handleDraft()}
                 disabled={busy || !subject.trim()}
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1 text-sm text-zinc-700 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm disabled:opacity-50 dark:border-zinc-700"
               >
-                {drafting ? "Drafting..." : "Draft message"}
+                {drafting ? "Drafting…" : "Draft"}
               </button>
             </div>
-            <textarea
-              value={bodyHtml}
-              onChange={(event) => setBodyHtml(event.target.value)}
-              onKeyDown={(event) => {
-                if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
-                  event.preventDefault();
-                  void handleSubmit();
-                }
-              }}
-              rows={8}
-              disabled={busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
-              required
-            />
-            <p className="mt-1 text-[11px] text-zinc-400">⌘/Ctrl + Enter to send</p>
-          </div>
+          ) : null}
 
           {signatureHtml ? (
-            <div className="rounded-lg border border-dashed border-zinc-300 p-3 dark:border-zinc-700">
-              <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Signature preview
-              </p>
+            <div className="max-h-20 overflow-hidden rounded-lg border border-dashed border-zinc-200 px-3 py-2 opacity-80 dark:border-zinc-800">
               <div
-                className="prose prose-sm max-w-none dark:prose-invert"
+                className="prose prose-sm max-w-none text-xs dark:prose-invert"
                 dangerouslySetInnerHTML={{ __html: signatureHtml }}
               />
             </div>
           ) : null}
 
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        </div>
 
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={busy}
-              className="rounded-lg px-4 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={busy}
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
-            >
-              {sending ? "Sending..." : "Send"}
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="flex shrink-0 items-center gap-2 border-t border-zinc-200 px-3 py-2.5 dark:border-zinc-800">
+          <button
+            type="submit"
+            disabled={busy || !to.trim() || !subject.trim() || !body.trim()}
+            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white disabled:opacity-50 hover:bg-blue-700"
+          >
+            {sending ? "Sending…" : "Send"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowAi((value) => !value)}
+            disabled={busy}
+            className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-900"
+          >
+            {showAi ? "Hide AI" : "AI draft"}
+          </button>
+          <p className="ml-auto hidden text-[11px] text-zinc-400 sm:block">
+            ⌘/Ctrl + Enter to send · Esc to minimize
+          </p>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+function RecipientRow({
+  label,
+  value,
+  onChange,
+  disabled,
+  required,
+  inputRef,
+  trailing,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  disabled?: boolean;
+  required?: boolean;
+  inputRef?: RefObject<HTMLInputElement | null>;
+  trailing?: ReactNode;
+}) {
+  return (
+    <div className="flex items-center gap-2 px-3 py-2">
+      <span className="w-14 shrink-0 text-xs text-zinc-500">{label}</span>
+      <input
+        ref={inputRef}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        disabled={disabled}
+        required={required}
+        className="min-w-0 flex-1 bg-transparent text-sm outline-none"
+        placeholder={label === "Subject" ? "" : "email@example.com"}
+      />
+      {trailing}
     </div>
   );
 }

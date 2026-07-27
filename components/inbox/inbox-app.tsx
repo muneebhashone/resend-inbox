@@ -455,10 +455,8 @@ export function InboxApp() {
           setComposerMode(null);
           return;
         }
-        if (composeOpen) {
-          setComposeOpen(false);
-          return;
-        }
+        // Compose window owns Escape (minimize / restore)
+        if (composeOpen) return;
         if (mobileDetail) {
           clearSelection();
         }
