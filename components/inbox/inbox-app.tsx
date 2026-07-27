@@ -489,24 +489,6 @@ export function InboxApp() {
             mobileDetail ? "hidden lg:flex" : "flex"
           }`}
         >
-          <div className="flex items-center justify-end gap-2 border-b border-zinc-200 px-3 py-2 lg:hidden dark:border-zinc-800">
-            <button
-              type="button"
-              onClick={() => void handleSync()}
-              disabled={syncing}
-              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
-            >
-              {syncing ? "Syncing..." : "Sync"}
-            </button>
-            <button
-              type="button"
-              onClick={() => void handleLogout()}
-              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
-            >
-              Logout
-            </button>
-          </div>
-
           <ThreadList
             threads={threads}
             selectedId={selectedId}
@@ -514,6 +496,7 @@ export function InboxApp() {
             query={query}
             view={view}
             loading={loadingThreads}
+            syncing={syncing}
             searchRef={searchRef}
             onSelect={handleSelect}
             onQueryChange={setQuery}
@@ -524,6 +507,8 @@ export function InboxApp() {
             }}
             onCompose={() => setComposeOpen(true)}
             onStarToggle={handleStarToggle}
+            onSync={() => void handleSync()}
+            onLogout={() => void handleLogout()}
           />
         </div>
 
@@ -537,14 +522,14 @@ export function InboxApp() {
               type="button"
               onClick={() => void handleSync()}
               disabled={syncing}
-              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
+              className="motion-press inline-flex min-h-10 items-center rounded-md px-3 py-2 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
             >
               {syncing ? "Syncing..." : "Sync from Resend"}
             </button>
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              className="motion-press inline-flex min-h-10 items-center rounded-md px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
             >
               Logout
             </button>

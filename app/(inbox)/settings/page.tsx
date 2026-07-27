@@ -53,9 +53,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-3xl p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <div>
+    <main className="mx-auto h-full w-full max-w-3xl overflow-y-auto overscroll-contain p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-6">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-2xl font-semibold">Settings</h1>
           <p className="mt-1 text-sm text-zinc-500">
             Configure your sending identity and email signature.
@@ -63,7 +63,7 @@ export default function SettingsPage() {
         </div>
         <Link
           href="/"
-          className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
+          className="motion-press inline-flex min-h-10 shrink-0 items-center self-start rounded-md px-3 py-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
         >
           Back to inbox
         </Link>
@@ -133,7 +133,7 @@ export default function SettingsPage() {
           <button
             type="submit"
             disabled={saving}
-            className="motion-press rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
+            className="motion-press inline-flex min-h-10 items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save settings"}
           </button>

@@ -187,7 +187,7 @@ function FilterPopover({
   return (
     <div
       ref={panelRef}
-      className="motion-slide-down-in absolute right-0 top-full z-30 mt-1 w-72 rounded-lg border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
+      className="motion-slide-down-in absolute right-0 top-full z-30 mt-1 w-72 max-w-[calc(100vw-1.5rem)] rounded-lg border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
     >
       <form onSubmit={submit} className="space-y-2.5">
         <p className="text-xs font-medium text-zinc-700 dark:text-zinc-200">

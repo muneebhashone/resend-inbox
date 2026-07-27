@@ -166,7 +166,7 @@ function ReplyComposerForm({
   return (
     <form
       onSubmit={(event) => void handleSubmit(event)}
-      className="motion-slide-up border-t border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-950"
+      className="motion-slide-up max-h-[55dvh] shrink-0 overflow-y-auto overscroll-contain border-t border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-950 sm:max-h-none"
     >
       <div className="flex items-center justify-between gap-2 px-4 pt-3">
         <div className="flex items-center gap-2">
@@ -261,12 +261,12 @@ function ReplyComposerForm({
 
         {error ? <p className="motion-fade-in text-sm text-red-600">{error}</p> : null}
 
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-400">⌘/Ctrl + Enter to send</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="hidden text-xs text-zinc-400 sm:block">⌘/Ctrl + Enter to send</p>
           <button
             type="submit"
             disabled={disabled || busy || !body.trim()}
-            className="motion-press rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
+            className="motion-press ml-auto inline-flex min-h-10 items-center rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
           >
             {sending ? "Sending..." : "Send"}
           </button>

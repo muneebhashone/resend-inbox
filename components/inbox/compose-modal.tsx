@@ -158,11 +158,11 @@ export function ComposeModal({
 
   if (size === "minimized") {
     return (
-      <div className="motion-minimized-in fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="motion-minimized-in fixed bottom-0 right-4 z-50 w-[min(18rem,calc(100vw-2rem))] overflow-hidden rounded-t-xl border border-zinc-200 bg-white pb-[env(safe-area-inset-bottom)] shadow-2xl shadow-black/10 dark:border-zinc-800 dark:bg-zinc-950">
         <button
           type="button"
           onClick={() => setSize("default")}
-          className="flex w-full items-center justify-between px-4 py-3 text-left text-sm"
+          className="flex min-h-12 w-full items-center justify-between px-4 py-3 text-left text-sm"
         >
           <span className="truncate font-medium text-zinc-800 dark:text-zinc-200">
             {subject.trim() || "New Message"}
@@ -198,10 +198,14 @@ export function ComposeModal({
     <div
       className={`motion-modal-in fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-black/50 ${
         expanded
-          ? "inset-3 rounded-xl sm:inset-6"
-          : "bottom-0 right-0 w-full rounded-t-xl sm:bottom-0 sm:right-4 sm:w-[560px] sm:rounded-t-xl"
+          ? "inset-0 rounded-none sm:inset-6 sm:rounded-xl"
+          : "inset-x-0 bottom-0 w-full rounded-t-xl pb-[env(safe-area-inset-bottom)] sm:inset-x-auto sm:right-4 sm:w-[560px]"
       }`}
-      style={expanded ? undefined : { maxHeight: "min(640px, calc(100dvh - 1rem))" }}
+      style={
+        expanded
+          ? undefined
+          : { maxHeight: "min(640px, calc(100dvh - 1rem - env(safe-area-inset-bottom, 0px)))" }
+      }
     >
       <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950">
         <h2 className="min-w-0 flex-1 truncate text-sm font-medium">
@@ -327,7 +331,7 @@ export function ComposeModal({
           <button
             type="submit"
             disabled={busy || !to.trim() || !subject.trim() || !body.trim()}
-            className="motion-press rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
+            className="motion-press inline-flex min-h-10 items-center rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
           >
             {sending ? "Sending…" : "Send"}
           </button>
@@ -335,7 +339,7 @@ export function ComposeModal({
             type="button"
             onClick={() => setShowAi((value) => !value)}
             disabled={busy}
-            className="motion-press rounded-lg px-3 py-2 text-sm text-zinc-600 transition hover:bg-zinc-100 disabled:opacity-40 dark:text-zinc-300 dark:hover:bg-zinc-900"
+            className="motion-press inline-flex min-h-10 items-center rounded-lg px-3 py-2 text-sm text-zinc-600 transition hover:bg-zinc-100 disabled:opacity-40 dark:text-zinc-300 dark:hover:bg-zinc-900"
           >
             {showAi ? "Hide AI" : "AI draft"}
           </button>

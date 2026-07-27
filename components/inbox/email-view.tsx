@@ -34,16 +34,20 @@ function displayName(from: string) {
 function EmailBody({ email }: { email: Email }) {
   if (email.html) {
     return (
-      <div
-        className="prose prose-sm max-w-none dark:prose-invert"
-        dangerouslySetInnerHTML={{ __html: sanitizeHtml(email.html) }}
-      />
+      <div className="max-w-full overflow-x-auto overscroll-x-contain">
+        <div
+          className="prose prose-sm max-w-none break-words dark:prose-invert [&_img]:h-auto [&_img]:max-w-full"
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(email.html) }}
+        />
+      </div>
     );
   }
 
   if (email.text) {
     return (
-      <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">{email.text}</pre>
+      <pre className="whitespace-pre-wrap break-words font-sans text-sm leading-relaxed">
+        {email.text}
+      </pre>
     );
   }
 
@@ -67,9 +71,9 @@ function MessageCard({
       <button
         type="button"
         onClick={onToggle}
-        className="motion-press flex w-full items-center gap-3 border-b border-zinc-100 px-1 py-2.5 text-left transition hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/40"
+        className="motion-press flex w-full items-center gap-2 border-b border-zinc-100 px-1 py-3 text-left transition hover:bg-zinc-50 sm:gap-3 sm:py-2.5 dark:border-zinc-900 dark:hover:bg-zinc-900/40"
       >
-        <span className="w-36 shrink-0 truncate text-sm font-medium">
+        <span className="max-w-[32%] shrink-0 truncate text-sm font-medium sm:max-w-none sm:w-36">
           {displayName(message.from)}
         </span>
         <span className="min-w-0 flex-1 truncate text-sm text-zinc-500">
@@ -78,7 +82,7 @@ function MessageCard({
         {attached ? (
           <PaperclipIcon className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
         ) : null}
-        <span className="shrink-0 text-xs text-zinc-400">
+        <span className="shrink-0 text-[11px] text-zinc-400 sm:text-xs">
           {formatShortDate(message.createdAt)}
         </span>
       </button>
@@ -191,7 +195,7 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
         ) : null}
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 sm:px-6">
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 sm:px-6">
         {thread.map((message, index) => (
           <div
             key={message.id}

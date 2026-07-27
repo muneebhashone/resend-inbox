@@ -12,12 +12,15 @@ type ThreadListProps = {
   query: string;
   view: InboxView;
   loading: boolean;
+  syncing?: boolean;
   searchRef: RefObject<HTMLInputElement | null>;
   onSelect: (id: string) => void;
   onQueryChange: (query: string) => void;
   onViewChange: (view: InboxView) => void;
   onCompose: () => void;
   onStarToggle: (thread: ThreadSummary) => void;
+  onSync?: () => void;
+  onLogout?: () => void;
 };
 
 function formatDate(value: string) {
@@ -66,23 +69,47 @@ export function ThreadList({
   query,
   view,
   loading,
+  syncing,
   searchRef,
   onSelect,
   onQueryChange,
   onViewChange,
   onCompose,
   onStarToggle,
+  onSync,
+  onLogout,
 }: ThreadListProps) {
   return (
     <aside className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
       <div className="flex shrink-0 flex-col gap-2 border-b border-zinc-200 p-3 dark:border-zinc-800">
-        <button
-          type="button"
-          onClick={onCompose}
-          className="motion-press rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.97]"
-        >
-          Compose
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onCompose}
+            className="motion-press min-h-10 flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.97]"
+          >
+            Compose
+          </button>
+          {onSync ? (
+            <button
+              type="button"
+              onClick={onSync}
+              disabled={syncing}
+              className="motion-press inline-flex min-h-10 items-center rounded-lg px-3 text-sm text-zinc-600 transition hover:bg-zinc-100 disabled:opacity-50 lg:hidden dark:text-zinc-300 dark:hover:bg-zinc-900"
+            >
+              {syncing ? "…" : "Sync"}
+            </button>
+          ) : null}
+          {onLogout ? (
+            <button
+              type="button"
+              onClick={onLogout}
+              className="motion-press inline-flex min-h-10 items-center rounded-lg px-3 text-sm text-zinc-600 transition hover:bg-zinc-100 lg:hidden dark:text-zinc-300 dark:hover:bg-zinc-900"
+            >
+              Logout
+            </button>
+          ) : null}
+        </div>
 
         <div className="flex gap-1 rounded-lg bg-zinc-100 p-0.5 dark:bg-zinc-900">
           {VIEWS.map((item) => (
@@ -90,7 +117,7 @@ export function ThreadList({
               key={item.id}
               type="button"
               onClick={() => onViewChange(item.id)}
-              className={`motion-press flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition ${
+              className={`motion-press min-h-9 flex-1 rounded-md px-2 py-2 text-xs font-medium transition ${
                 view === item.id
                   ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100"
                   : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
@@ -194,7 +221,7 @@ export function ThreadList({
                     event.stopPropagation();
                     onStarToggle(thread);
                   }}
-                  className={`motion-press relative shrink-0 px-2 text-sm transition before:absolute before:inset-0 before:content-[''] ${
+                  className={`motion-press relative inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center text-sm transition before:absolute before:inset-0 before:content-[''] ${
                     thread.isStarred
                       ? "text-amber-500"
                       : "text-zinc-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 max-sm:opacity-100 dark:text-zinc-600"

@@ -107,6 +107,7 @@ select:focus-visible,
 
 .prose {
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 .prose p {
@@ -117,6 +118,12 @@ select:focus-visible,
   color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.prose img,
+.prose video {
+  max-width: 100%;
+  height: auto;
 }
 
 @keyframes inbox-progress {
