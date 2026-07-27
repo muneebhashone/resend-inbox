@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(npx next build 2 >& 1)",
+      "Shell(git:*)",
+      "Shell(inbox:*)",
+      "Shell(/layout.tsx:*)",
+      "Shell(/settings/page.tsx:*)",
+      "Shell(P0:*)",
+      "Shell(-:*)",
+      "Shell(P1:*)",
+      "Shell(P2:*)",
+      "Shell(cd /Users/Apple/repos/resend-inbox && git add -A && git commit -F - <<'COMMITMSG' Redesign: warm editorial palette, focus accessibility, finish pass - Shifted color system from cool azure/graphite to warm stone/amber-sienna - Removed glassmorphism — all surfaces are now solid and deliberate - Added global focus-visible outlines for full keyboard accessibility (P0) - Bumped all form inputs to 16px on mobile to prevent iOS Safari zoom (P1) - Raised minimum text size from 10-11px to 12px across 17 locations (P2) - Added prefers-reduced-motion support globally - Improved empty state copy with keyboard nav hint - Added active:scale press feedback to all primary buttons - Swapped search filter icon from ⊕ to proper sliders SVG - Login and settings buttons now use accent color consistently - Build verified clean Co-authored-by: CommandCodeBot <noreply@commandcode.ai> COMMITMSG)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}

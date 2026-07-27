@@ -19,7 +19,7 @@ export function UndoToast({ state, onUndo, onDismiss }: UndoToastProps) {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center px-4">
-      <div className="pointer-events-auto flex items-center gap-3 rounded-xl border border-zinc-700/50 bg-zinc-800 px-4 py-3 text-sm text-zinc-100 shadow-xl shadow-black/40">
+      <div className="pointer-events-auto flex items-center gap-3 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-800 shadow-xl shadow-black/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
         <span>{state.label}</span>
         <button
           type="button"

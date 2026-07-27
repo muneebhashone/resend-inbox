@@ -74,17 +74,17 @@ export function ThreadList({
   onStarToggle,
 }: ThreadListProps) {
   return (
-    <aside className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden border-r border-zinc-200/80 bg-white/40 dark:border-zinc-800/80 dark:bg-zinc-950/30">
-      <div className="flex shrink-0 flex-col gap-2 border-b border-zinc-200/80 p-3 dark:border-zinc-800/80">
+    <aside className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="flex shrink-0 flex-col gap-2 border-b border-zinc-200 p-3 dark:border-zinc-800">
         <button
           type="button"
           onClick={onCompose}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
         >
           Compose
         </button>
 
-        <div className="flex gap-1 rounded-lg bg-zinc-100/80 p-0.5 dark:bg-zinc-900/80">
+        <div className="flex gap-1 rounded-lg bg-zinc-100 p-0.5 dark:bg-zinc-900">
           {VIEWS.map((item) => (
             <button
               key={item.id}
@@ -129,12 +129,12 @@ export function ThreadList({
             return (
               <div
                 key={thread.threadId}
-                className={`group relative flex border-b border-zinc-100/80 transition dark:border-zinc-900/80 ${
+                className={`group relative flex border-b border-zinc-100 transition dark:border-zinc-900 ${
                   selected
-                    ? "bg-blue-600/10 dark:bg-blue-500/10"
+                    ? "bg-blue-50 dark:bg-blue-700/10"
                     : focused
-                      ? "bg-zinc-100/80 dark:bg-zinc-900/60"
-                      : "hover:bg-zinc-100/70 dark:hover:bg-zinc-900/40"
+                      ? "bg-zinc-100 dark:bg-zinc-900/60"
+                      : "hover:bg-zinc-50 dark:hover:bg-zinc-900/30"
                 }`}
               >
                 {!thread.isRead ? (
@@ -155,7 +155,7 @@ export function ThreadList({
                     >
                       {thread.from}
                     </span>
-                    <span className="flex shrink-0 items-center gap-1.5 text-[11px] text-zinc-500">
+                    <span className="flex shrink-0 items-center gap-1.5 text-xs text-zinc-500">
                       {thread.hasAttachments ? (
                         <PaperclipIcon className="h-3 w-3 text-zinc-400" />
                       ) : null}
@@ -172,7 +172,7 @@ export function ThreadList({
                     {thread.subject || "(no subject)"}
                   </div>
                   <div className="mt-0.5 flex items-center gap-2">
-                    <p className="truncate text-[11px] text-zinc-500">
+                    <p className="truncate text-xs text-zinc-500">
                       {thread.snippet}
                     </p>
                     {thread.unreadCount > 0 ? (
@@ -181,7 +181,7 @@ export function ThreadList({
                       </span>
                     ) : null}
                     {thread.messageCount > 1 ? (
-                      <span className="shrink-0 text-[10px] text-zinc-400">
+                      <span className="shrink-0 text-xs text-zinc-400">
                         {thread.messageCount}
                       </span>
                     ) : null}

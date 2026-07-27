@@ -147,8 +147,15 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
 
   if (!email) {
     return (
-      <section className="flex flex-1 items-center justify-center text-sm text-zinc-500">
-        Select a conversation to read
+      <section className="flex flex-1 items-center justify-center px-4">
+        <div className="max-w-xs text-center">
+          <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
+            No conversation selected
+          </p>
+          <p className="mt-1.5 text-xs text-zinc-500">
+            Choose a thread from the sidebar or press <kbd className="rounded border border-zinc-300 bg-zinc-50 px-1 text-xs dark:border-zinc-700 dark:bg-zinc-900">j</kbd> / <kbd className="rounded border border-zinc-300 bg-zinc-50 px-1 text-xs dark:border-zinc-700 dark:bg-zinc-900">k</kbd> to navigate
+          </p>
+        </div>
       </section>
     );
   }

@@ -1,0 +1,10 @@
+# - Wants frequent "commit and push" after each logical change — prefers many small, immediately-pushed commits over batching. Confidence: 0.95
+- Wants frequent "commit and push" after each logical change — prefers many small, immediately-pushed commits over batching. Confidence: 0.95
+- Prefers UI/UX that is "seamless", "discoverable", and comparable to Gmail/MacOS Mail quality — does not want to have to remember feature sets or keyboard shortcuts. Confidence: 0.9
+- Likes dark mode but wants good aesthetics — dark should not be "too dark"; color palette should feel pleasing. Confidence: 0.85
+- Wants email composition to support Markdown with auto-detection (pasted markdown should be automatically formatted). Confidence: 0.8
+- Trusts the agent to ship without reviewing intermediate work — prefers "just go ahead / ship the best" autonomy. Confidence: 0.8
+- Wants environment configuration documented in the repo (e.g., .env.example file). Confidence: 0.7
+- Wants production CI/CD to auto-run database migrations (e.g., post-build hook on Vercel). Confidence: 0.7
+- Expects consistent, responsive layout behavior — sidebar widths should not jump based on content. Confidence: 0.7
+- Wants attachment metadata visible in list views without bloat. Confidence: 0.7

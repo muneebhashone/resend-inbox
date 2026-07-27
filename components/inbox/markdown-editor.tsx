@@ -140,7 +140,7 @@ export function MarkdownEditor({
               key={item}
               type="button"
               onClick={() => setMode(item)}
-              className={`rounded px-2 py-1 text-[11px] font-medium capitalize ${
+              className={`rounded px-2 py-1 text-xs font-medium capitalize ${
                 mode === item
                   ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-950 dark:text-zinc-100"
                   : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
@@ -167,11 +167,11 @@ export function MarkdownEditor({
           </>
         ) : null}
 
-        <span className="ml-auto text-[10px] text-zinc-400">Markdown</span>
+        <span className="ml-auto text-xs text-zinc-400">Markdown</span>
       </div>
 
       {pasteHint ? (
-        <div className="border-b border-emerald-200 bg-emerald-50 px-3 py-1.5 text-[11px] text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
+        <div className="border-b border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
           {pasteHint}
         </div>
       ) : null}
@@ -191,7 +191,7 @@ export function MarkdownEditor({
             rows={rows}
             placeholder={placeholder}
             disabled={disabled}
-            className={`min-h-[140px] w-full resize-y bg-transparent px-3 py-2 font-mono text-[13px] leading-relaxed outline-none disabled:opacity-50 ${
+            className={`min-h-[140px] w-full resize-y bg-transparent px-3 py-2 font-mono text-sm max-sm:text-base leading-relaxed outline-none disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-0 focus-visible:outline-none ${
               mode === "split" ? "border-b border-zinc-200 sm:border-b-0 sm:border-r dark:border-zinc-800" : ""
             }`}
           />

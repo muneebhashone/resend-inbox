@@ -1,18 +1,20 @@
 @import "tailwindcss";
 
 /*
-  Soft graphite palette — dark-first, lifted surfaces, calm azure accent.
-  Remaps zinc/blue so existing utilities inherit the new look.
+  Warm editorial palette — solid surfaces, amber/sienna accent,
+  grounded tones that feel authored and reading-first.
+  Remaps zinc → warm stone, blue → amber so existing utilities inherit the new look.
 */
 :root {
-  --background: #f3f4f7;
-  --foreground: #1a1d26;
+  --background: #faf8f5;
+  --foreground: #2c2621;
   --surface: #ffffff;
   --surface-elevated: #ffffff;
-  --border-subtle: #e2e5ec;
-  --accent: #3d7aef;
-  --accent-soft: #e8effc;
-  --glow: rgba(61, 122, 239, 0.08);
+  --border-subtle: #e8e4dd;
+  --accent: #c27519;
+  --accent-soft: rgba(194, 117, 25, 0.08);
+  --accent-text: #8a4f0c;
+  --glow: rgba(194, 117, 25, 0.05);
 }
 
 @theme inline {
@@ -21,49 +23,52 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Softer zinc: cool graphite instead of pure black */
-  --color-zinc-50: #f6f7f9;
-  --color-zinc-100: #eceef3;
-  --color-zinc-200: #dcdfe7;
-  --color-zinc-300: #c3c8d4;
-  --color-zinc-400: #959bab;
-  --color-zinc-500: #727889;
-  --color-zinc-600: #5a6070;
-  --color-zinc-700: #434856;
-  --color-zinc-800: #2f3340;
-  --color-zinc-900: #22252f;
-  --color-zinc-950: #161922;
+  /* Warm stone: replaces cold zinc with earthy greys */
+  --color-zinc-50: #f8f6f3;
+  --color-zinc-100: #f0ede8;
+  --color-zinc-200: #e8e4dd;
+  --color-zinc-300: #d4cec5;
+  --color-zinc-400: #aba092;
+  --color-zinc-500: #8c7f70;
+  --color-zinc-600: #6e6358;
+  --color-zinc-700: #544b42;
+  --color-zinc-800: #3d3630;
+  --color-zinc-900: #2c2621;
+  --color-zinc-950: #1c1815;
 
-  /* Calmer azure accent */
-  --color-blue-500: #5b8fff;
-  --color-blue-600: #3d7aef;
-  --color-blue-700: #2f64d4;
+  /* Amber/sienna accent: replaces blue */
+  --color-blue-50: #fdf8f0;
+  --color-blue-100: #faedd9;
+  --color-blue-200: #f0d5a4;
+  --color-blue-500: #e0962e;
+  --color-blue-600: #c27519;
+  --color-blue-700: #a05d0e;
 
-  --color-amber-500: #d4a017;
-  --color-amber-100: #faf3dc;
-  --color-amber-200: #f0e0a8;
-  --color-amber-800: #7a5c10;
-  --color-amber-950: #2e240c;
+  --color-amber-500: #e0962e;
+  --color-amber-100: #faedd9;
+  --color-amber-200: #f0d5a4;
+  --color-amber-800: #7a4c10;
+  --color-amber-950: #2e1e08;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #161922;
-    --foreground: #e8eaef;
-    --surface: #1c1f2a;
-    --surface-elevated: #242833;
-    --border-subtle: #2f3340;
-    --accent: #6b9aff;
-    --accent-soft: rgba(107, 154, 255, 0.12);
-    --glow: rgba(107, 154, 255, 0.14);
+    --background: #1c1815;
+    --foreground: #ede6dc;
+    --surface: #24201b;
+    --surface-elevated: #2c2722;
+    --border-subtle: #33302a;
+    --accent: #e8942e;
+    --accent-soft: rgba(232, 148, 46, 0.12);
+    --accent-text: #d8882a;
+    --glow: rgba(232, 148, 46, 0.08);
     color-scheme: dark;
   }
 }
 
 body {
   background:
-    radial-gradient(1200px 600px at 10% -10%, var(--glow), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(120, 140, 180, 0.06), transparent 50%),
+    radial-gradient(1000px 500px at 50% -10%, var(--glow), transparent 60%),
     var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
@@ -72,6 +77,23 @@ body {
 ::selection {
   background: var(--accent-soft);
   color: var(--foreground);
+}
+
+/* Focus-visible: ensures keyboard users see where they are on every interactive element */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Elements with outline-none already have ring-based focus styles — avoid double outline */
+.outline-none:focus-visible {
+  outline: none;
 }
 
 .prose {
@@ -100,4 +122,19 @@ body {
 .inbox-progress-bar {
   animation: inbox-progress 1.2s ease-in-out infinite;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .inbox-progress-bar {
+    animation: none;
+    background: var(--accent);
+    opacity: 0.2;
+  }
 }

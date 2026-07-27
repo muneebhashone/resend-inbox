@@ -22,7 +22,7 @@ export function AttachmentList({ attachments }: { attachments: EmailAttachment[]
 
           const inner = (
             <>
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-zinc-200 text-[10px] font-semibold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-blue-50 text-xs font-semibold text-blue-700 dark:bg-blue-700/20 dark:text-blue-400">
                 {label}
               </span>
               <span className="min-w-0">
@@ -30,9 +30,9 @@ export function AttachmentList({ attachments }: { attachments: EmailAttachment[]
                   {name}
                 </span>
                 {attachment.downloadUrl ? (
-                  <span className="block text-[11px] text-zinc-500">Download</span>
+                  <span className="block text-xs text-zinc-500">Download</span>
                 ) : (
-                  <span className="block text-[11px] text-zinc-400">Unavailable</span>
+                  <span className="block text-xs text-zinc-400">Unavailable</span>
                 )}
               </span>
             </>

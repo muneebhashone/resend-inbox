@@ -172,7 +172,7 @@ function FilterPopover({
   }
 
   const fieldClass =
-    "w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-xs dark:border-zinc-700 dark:bg-zinc-900";
+    "w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-xs max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900";
 
   return (
     <div
@@ -184,7 +184,7 @@ function FilterPopover({
           Add filters
         </p>
         <label className="block space-y-1">
-          <span className="text-[11px] text-zinc-500">From</span>
+          <span className="text-xs text-zinc-500">From</span>
           <input
             value={from}
             onChange={(e) => setFrom(e.target.value)}
@@ -193,7 +193,7 @@ function FilterPopover({
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-[11px] text-zinc-500">To</span>
+          <span className="text-xs text-zinc-500">To</span>
           <input
             value={to}
             onChange={(e) => setTo(e.target.value)}
@@ -202,7 +202,7 @@ function FilterPopover({
           />
         </label>
         <label className="block space-y-1">
-          <span className="text-[11px] text-zinc-500">Subject</span>
+          <span className="text-xs text-zinc-500">Subject</span>
           <input
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
@@ -252,7 +252,7 @@ function FilterPopover({
         </div>
         <div className="grid grid-cols-2 gap-2">
           <label className="block space-y-1">
-            <span className="text-[11px] text-zinc-500">After</span>
+            <span className="text-xs text-zinc-500">After</span>
             <input
               type="date"
               value={after}
@@ -261,7 +261,7 @@ function FilterPopover({
             />
           </label>
           <label className="block space-y-1">
-            <span className="text-[11px] text-zinc-500">Before</span>
+            <span className="text-xs text-zinc-500">Before</span>
             <input
               type="date"
               value={before}
@@ -508,7 +508,7 @@ export function SearchBar({
           {chips.map((op, index) => (
             <span
               key={`${op.kind}-${op.value}-${index}`}
-              className="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-1.5 py-0.5 text-[11px] text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+              className="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
             >
               <span className="truncate">{operatorLabel(op)}</span>
               <button
@@ -541,7 +541,7 @@ export function SearchBar({
             aria-expanded={open}
             aria-controls={listId}
             aria-autocomplete="list"
-            className="min-w-[6rem] flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400"
+            className="min-w-[6rem] flex-1 bg-transparent text-sm max-sm:text-base outline-none placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset focus-visible:outline-none"
           />
         </div>
         <div className="relative shrink-0">
@@ -552,9 +552,13 @@ export function SearchBar({
               setFilterOpen((value) => !value);
               setOpen(false);
             }}
-            className="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-zinc-300 text-lg text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-800 dark:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-200"
+            className="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-zinc-300 text-sm text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-700 dark:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-200"
           >
-            ⊕
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <line x1="2" y1="4" x2="14" y2="4" />
+              <line x1="4" y1="8" x2="12" y2="8" />
+              <line x1="6" y1="12" x2="10" y2="12" />
+            </svg>
           </button>
           {filterOpen ? (
             <FilterPopover
@@ -566,7 +570,7 @@ export function SearchBar({
       </div>
 
       {showHint && open && chips.length === 0 && !draft ? (
-        <p className="mt-1.5 flex items-center justify-between gap-2 text-[11px] text-zinc-500">
+        <p className="mt-1.5 flex items-center justify-between gap-2 text-xs text-zinc-500">
           <span>
             Try{" "}
             <code className="text-zinc-600 dark:text-zinc-400">
@@ -607,7 +611,7 @@ export function SearchBar({
                 }`}
               >
                 <span className="font-medium">{suggestion.label}</span>
-                <span className="truncate text-[11px] text-zinc-500">
+                <span className="truncate text-xs text-zinc-500">
                   {suggestion.description}
                 </span>
               </button>

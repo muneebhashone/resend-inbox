@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Resend Inbox — Checkup Report</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
+		.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+		.report-section { border: 1px solid #222226; background: #0a0a0b; position: relative; }
+		.corner-box { position: absolute; width: 20px; height: 20px; border: 1px solid #222226; background: #000; }
+	</style>
+</head>
+<body class="bg-black text-[#fafafa]">
+	<main class="mx-auto w-full max-w-6xl px-5 py-8 md:px-10 md:py-12">
+		<header class="report-section mb-8 p-6 md:p-8">
+			<div class="corner-box left-0 top-0 -translate-x-1/2 -translate-y-1/2"></div>
+			<div class="corner-box right-0 top-0 translate-x-1/2 -translate-y-1/2"></div>
+			<div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+				<div>
+					<div class="mono mb-2 text-xs tracking-widest text-[#666]">// CHECKUP</div>
+					<h1 class="text-4xl font-bold tracking-tight md:text-6xl">Resend Inbox</h1>
+				</div>
+				<div class="mono text-left text-xs text-[#666] md:text-right">
+					<div>COMMANDCODE REPORT</div>
+					<div class="text-[#444]">2026-07-27</div>
+				</div>
+			</div>
+		</header>
+
+		<section class="report-section mb-8 p-6 md:p-8">
+			<div class="corner-box left-0 top-0 -translate-x-1/2 -translate-y-1/2"></div>
+			<div class="corner-box right-0 top-0 translate-x-1/2 -translate-y-1/2"></div>
+			<div class="grid gap-8 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+				<div>
+					<div class="mono mb-2 text-xs tracking-widest text-[#666]">// OVERALL</div>
+					<div class="text-6xl font-bold tracking-tight md:text-7xl">35</div>
+					<div class="mt-1 text-lg text-[#666]">/ 60</div>
+					<div class="mt-4 inline-flex border border-[#fbbf24]/30 bg-[#fbbf24]/10 px-3 py-1 text-sm text-[#fbbf24]">NEEDS WORK</div>
+				</div>
+				<div>
+					<div class="mono mb-3 text-xs tracking-widest text-[#666]">// TL;DR</div>
+					<p class="text-sm leading-6 text-[#a0a0a0]">Functionally well-built with full keyboard shortcuts, undo, and state coverage. But no visible focus indicators exist anywhere — keyboard-only users are left blind. Text sizes drop to 10–11px across 18+ places. Form inputs trigger iOS Safari auto-zoom.</p>
+					<p class="mt-4 text-sm leading-6 text-[#fbbf24]">Add focus-visible ring styles to every interactive element before shipping. Bump small text to at least 12px. Use text-base on form inputs under 640px to prevent iOS zoom.</p>
+				</div>
+			</div>
+		</section>
+
+		<section class="report-section mb-8 p-6 md:p-8">
+			<div class="mono mb-6 text-xs tracking-widest text-[#666]">// HEURISTIC SCORES</div>
+			<div class="overflow-x-auto">
+				<table class="w-full min-w-[720px] border-collapse text-sm">
+					<thead>
+						<tr class="border-b border-[#222226] text-left mono text-xs text-[#666]">
+							<th class="py-3 pr-4 font-normal">#</th>
+							<th class="py-3 pr-4 font-normal">HEURISTIC</th>
+							<th class="py-3 pr-4 font-normal">SCORE</th>
+							<th class="py-3 font-normal">KEY FINDING</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="border-b border-[#1a1a1e]">
+							<td class="py-4 pr-4 text-[#555]">1</td>
+							<td class="py-4 pr-4 text-[#fafafa]">Intentionality</td>
+							<td class="py-4 pr-4 text-[#fbbf24]">5/10</td>
+							<td class="py-4 text-[#a0a0a0]">Warm palette feels deliberate, but Geist + Gmail 3-pane are framework defaults</td>
+						</tr>
+						<tr class="border-b border-[#1a1a1e]">
+							<td class="py-4 pr-4 text-[#555]">2</td>
+							<td class="py-4 pr-4 text-[#fafafa]">Readability</td>
+							<td class="py-4 pr-4 text-[#fbbf24]">5/10</td>
+							<td class="py-4 text-[#a0a0a0]">11px text used in 18+ locations; unread badge at 10px</td>
+						</tr>
+						<tr class="border-b border-[#1a1a1e]">
+							<td class="py-4 pr-4 text-[#555]">3</td>
+							<td class="py-4 pr-4 text-[#fafafa]">Usability</td>
+							<td class="py-4 pr-4 text-[#34d399]">10/10</td>
+							<td class="py-4 text-[#a0a0a0]">Full keyboard nav, single-key shortcuts, undo for all destructive actions</td>
+						</tr>
+						<tr class="border-b border-[#1a1a1e]">
+							<td class="py-4 pr-4 text-[#555]">4</td>
+							<td class="py-4 pr-4 text-[#fafafa]">Responsiveness</td>
+							<td class="py-4 pr-4 text-[#fbbf24]">5/10</td>
+							<td class="py-4 text-[#a0a0a0]">Text-sm (14px) inputs trigger iOS Safari auto-zoom; no safe-area handling</td>
+						</tr>
+						<tr class="border-b border-[#1a1a1e]">
+							<td class="py-4 pr-4 text-[#555]">5</td>
+							<td class="py-4 pr-4 text-[#fafafa]">Speed</td>
+							<td class="py-4 pr-4 text-[#34d399]">10/10</td>
+							<td class="py-4 text-[#a0a0a0]">Optimistic updates, skeleton loading, 30s background polling, instant navigation</td>
+						</tr>
+						<tr>
+							<td class="py-4 pr-4 text-[#555]">6</td>
+							<td class="py-4 pr-4 text-[#fafafa]">Accessibility</td>
+							<td class="py-4 pr-4 text-[#ef4444]">0/10</td>
+							<td class="py-4 text-[#a0a0a0]">Zero visible focus indicators; 3 outline-none on core inputs; WCAG 2.4.7 violation</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</section>
+
+		<section class="report-section mb-8 p-6 md:p-8">
+			<div class="mono mb-6 text-xs tracking-widest text-[#666]">// COGNITIVE LOAD / RISK</div>
+			<div class="grid gap-6 md:grid-cols-2">
+				<div>
+					<div class="mb-3 text-xl font-semibold">MODERATE</div>
+					<ul class="space-y-3 text-sm text-[#a0a0a0]">
+						<li><span class="mono mr-2 text-[#34d399]">PASS</span>Optimistic architecture with undo paths</li>
+						<li><span class="mono mr-2 text-[#34d399]">PASS</span>Loading skeletons and empty states present</li>
+						<li><span class="mono mr-2 text-[#34d399]">PASS</span>Keyboard shortcuts for all primary actions</li>
+						<li><span class="mono mr-2 text-[#fbbf24]">WATCH</span>18+ instances of sub-12px text across the surface</li>
+						<li><span class="mono mr-2 text-[#fbbf24]">WATCH</span>No prefers-reduced-motion handling</li>
+						<li><span class="mono mr-2 text-[#ef4444]">FAIL</span>No visible focus indicators — keyboard path is invisible</li>
+					</ul>
+				</div>
+				<div>
+					<div class="mono mb-3 text-xs tracking-widest text-[#666]">// NEXT MODES</div>
+					<div class="flex flex-wrap gap-2">
+						<span class="border border-[#333] px-3 py-1 text-sm text-[#a0a0a0]">/design interaction</span>
+						<span class="border border-[#333] px-3 py-1 text-sm text-[#a0a0a0]">/design responsive</span>
+						<span class="border border-[#333] px-3 py-1 text-sm text-[#a0a0a0]">/design typeset</span>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="report-section mb-8 p-6 md:p-8">
+			<div class="mono mb-6 text-xs tracking-widest text-[#666]">// WHAT'S WORKING</div>
+			<div class="grid gap-4 md:grid-cols-3">
+				<article class="border border-[#1f1f24] p-4">
+					<h2 class="mb-2 text-sm font-semibold">Keyboard Navigation</h2>
+					<p class="text-sm leading-6 text-[#a0a0a0]">j/k movement, single-key shortcuts (e archive, r reply, c compose), Escape back — better than most email clients. Thoughtfully suppresses shortcuts when typing in inputs.</p>
+				</article>
+				<article class="border border-[#1f1f24] p-4">
+					<h2 class="mb-2 text-sm font-semibold">Optimistic Architecture</h2>
+					<p class="text-sm leading-6 text-[#a0a0a0]">Thread actions update the UI instantly with 5-second undo. Feels fast and forgiving. No loading spinners for routine operations.</p>
+				</article>
+				<article class="border border-[#1f1f24] p-4">
+					<h2 class="mb-2 text-sm font-semibold">State Coverage</h2>
+					<p class="text-sm leading-6 text-[#a0a0a0]">Loading skeletons, empty states for each view, error messages, disabled states, and refreshing indicators all present. No blank-screen moments.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="report-section mb-8 p-6 md:p-8">
+			<div class="mono mb-6 text-xs tracking-widest text-[#666]">// PRIORITY ISSUES</div>
+			<div class="space-y-5">
+				<article class="border border-[#2a1d22] bg-[#110b0d] p-5">
+					<div class="mono mb-2 text-xs text-[#f43f5e]">P0 — CRITICAL</div>
+					<h2 class="mb-2 text-lg font-semibold">No Visible Focus Indicators</h2>
+					<p class="mb-4 text-sm leading-6 text-[#a0a0a0]">Search input (search-bar.tsx:544), compose recipient inputs (compose-modal.tsx:377), and markdown textarea (markdown-editor.tsx:194) all use bare <code>outline-none</code> with no replacement. Keyboard users tabbing through the interface get zero feedback about which element is focused. WCAG 2.4.7 violation — Focus Visible.</p>
+					<div class="border-l border-[#fbbf24] pl-4 text-sm leading-6 text-[#fbbf24]">FIX: Replace all bare <code>outline-none</code> with <code>focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:outline-none</code>. Apply to every interactive element: buttons, inputs, textareas, and clickable rows.</div>
+				</article>
+				<article class="border border-[#2a1d22] bg-[#110b0d] p-5">
+					<div class="mono mb-2 text-xs text-[#f43f5e]">P1 — HIGH</div>
+					<h2 class="mb-2 text-lg font-semibold">iOS Safari Input Zoom</h2>
+					<p class="mb-4 text-sm leading-6 text-[#a0a0a0]">All form elements use text-sm (14px) or smaller: search input, Compose To/Cc/Bcc/Subject fields, reply composer fields, markdown textarea (13px text-[13px]), AI draft input, and filter popover fields. iOS Safari auto-zooms when any form element below 16px receives focus, breaking the layout. Do not use maximum-scale=1 to suppress zoom — that disables pinch-to-zoom.</p>
+					<div class="border-l border-[#fbbf24] pl-4 text-sm leading-6 text-[#fbbf24]">FIX: Add <code>max-sm:text-base</code> to all inputs and textareas. On screens under 640px, bump to 16px. The markdown textarea needs text-base instead of text-[13px] on mobile.</div>
+				</article>
+				<article class="border border-[#2a1d22] bg-[#110b0d] p-5">
+					<div class="mono mb-2 text-xs text-[#fbbf24]">P2 — MEDIUM</div>
+					<h2 class="mb-2 text-lg font-semibold">Widespread Sub-12px Text</h2>
+					<p class="mb-4 text-sm leading-6 text-[#a0a0a0]">18+ instances of text-[11px] across thread list snippets, dates, filter labels, and metadata. The unread badge uses text-[10px]. On high-DPI screens this renders at ~8.5 physical pixels — below the threshold where letterforms remain distinguishable and readable.</p>
+					<div class="border-l border-[#fbbf24] pl-4 text-sm leading-6 text-[#fbbf24]">FIX: Bump body-like text to text-xs (12px) minimum. text-[10px] is acceptable only for the unread badge (decorative, high-contrast white on accent). Otherwise, nothing below 12px.</div>
+				</article>
+			</div>
+		</section>
+
+		<footer class="mono py-8 text-center text-xs tracking-widest text-[#444]">
+			Generated with CommandCode — 2026-07-27
+		</footer>
+	</main>
+</body>
+</html>

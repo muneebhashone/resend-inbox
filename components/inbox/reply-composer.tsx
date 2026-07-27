@@ -166,7 +166,7 @@ function ReplyComposerForm({
   return (
     <form
       onSubmit={(event) => void handleSubmit(event)}
-      className="border-t border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950"
+      className="border-t border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-950"
     >
       <div className="flex items-center justify-between gap-2 px-4 pt-3">
         <div className="flex items-center gap-2">
@@ -198,7 +198,7 @@ function ReplyComposerForm({
               onChange={(event) => setTo(event.target.value)}
               placeholder="To"
               disabled={disabled || busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
             />
             <input
               type="text"
@@ -206,7 +206,7 @@ function ReplyComposerForm({
               onChange={(event) => setSubject(event.target.value)}
               placeholder="Subject"
               disabled={disabled || busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
             />
           </>
         ) : null}
@@ -219,7 +219,7 @@ function ReplyComposerForm({
               onChange={(event) => setInstructions(event.target.value)}
               placeholder="Notes for draft (optional)"
               disabled={disabled || busy}
-              className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
             />
             <button
               type="button"
@@ -261,11 +261,11 @@ function ReplyComposerForm({
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
 
         <div className="flex items-center justify-between">
-          <p className="text-[11px] text-zinc-400">⌘/Ctrl + Enter to send</p>
+          <p className="text-xs text-zinc-400">⌘/Ctrl + Enter to send</p>
           <button
             type="submit"
             disabled={disabled || busy || !body.trim()}
-            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white disabled:opacity-50 hover:bg-blue-700"
+            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
           >
             {sending ? "Sending..." : "Send"}
           </button>

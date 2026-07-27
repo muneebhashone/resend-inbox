@@ -158,13 +158,13 @@ export function ComposeModal({
 
   if (size === "minimized") {
     return (
-      <div className="fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-700/80 bg-zinc-800 text-zinc-100 shadow-2xl shadow-black/40">
+      <div className="fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-800 dark:bg-zinc-950">
         <button
           type="button"
           onClick={() => setSize("default")}
           className="flex w-full items-center justify-between px-4 py-3 text-left text-sm"
         >
-          <span className="truncate font-medium">
+          <span className="truncate font-medium text-zinc-800 dark:text-zinc-200">
             {subject.trim() || "New Message"}
           </span>
           <span className="flex items-center gap-1">
@@ -181,7 +181,7 @@ export function ComposeModal({
                   handleClose();
                 }
               }}
-              className="rounded px-1.5 py-0.5 hover:bg-white/10"
+              className="rounded px-1.5 py-0.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
               aria-label="Close"
             >
               ×
@@ -196,14 +196,14 @@ export function ComposeModal({
 
   return (
     <div
-      className={`fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-700/80 dark:bg-zinc-900 dark:shadow-black/50 ${
+      className={`fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-black/50 ${
         expanded
           ? "inset-3 rounded-xl sm:inset-6"
           : "bottom-0 right-0 w-full rounded-t-xl sm:bottom-0 sm:right-4 sm:w-[560px] sm:rounded-t-xl"
       }`}
       style={expanded ? undefined : { maxHeight: "min(640px, calc(100dvh - 1rem))" }}
     >
-      <div className="flex shrink-0 items-center gap-2 border-b border-zinc-800/50 bg-zinc-800 px-3 py-2 text-zinc-100">
+      <div className="flex shrink-0 items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-950">
         <h2 className="min-w-0 flex-1 truncate text-sm font-medium">
           {subject.trim() || "New Message"}
         </h2>
@@ -211,7 +211,7 @@ export function ComposeModal({
           type="button"
           onClick={() => setSize("minimized")}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs hover:bg-white/10"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           aria-label="Minimize"
         >
           —
@@ -220,7 +220,7 @@ export function ComposeModal({
           type="button"
           onClick={() => setSize(expanded ? "default" : "expanded")}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs hover:bg-white/10"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           aria-label={expanded ? "Restore" : "Expand"}
         >
           {expanded ? "⌟⌜" : "⌜⌟"}
@@ -229,7 +229,7 @@ export function ComposeModal({
           type="button"
           onClick={handleClose}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs hover:bg-white/10"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           aria-label="Close"
         >
           ×
@@ -298,7 +298,7 @@ export function ComposeModal({
                 onChange={(event) => setInstructions(event.target.value)}
                 placeholder="Notes for AI draft (tone, points to cover…)"
                 disabled={busy}
-                className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+                className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
               />
               <button
                 type="button"
@@ -327,7 +327,7 @@ export function ComposeModal({
           <button
             type="submit"
             disabled={busy || !to.trim() || !subject.trim() || !body.trim()}
-            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white disabled:opacity-50 hover:bg-blue-700"
+            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
           >
             {sending ? "Sending…" : "Send"}
           </button>
@@ -339,7 +339,7 @@ export function ComposeModal({
           >
             {showAi ? "Hide AI" : "AI draft"}
           </button>
-          <p className="ml-auto hidden text-[11px] text-zinc-400 sm:block">
+          <p className="ml-auto hidden text-xs text-zinc-400 sm:block">
             ⌘/Ctrl + Enter to send · Esc to minimize
           </p>
         </div>
@@ -374,7 +374,7 @@ function RecipientRow({
         onChange={(event) => onChange(event.target.value)}
         disabled={disabled}
         required={required}
-        className="min-w-0 flex-1 bg-transparent text-sm outline-none"
+        className="min-w-0 flex-1 bg-transparent text-sm max-sm:text-base outline-none placeholder:text-zinc-400 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset focus-visible:outline-none"
         placeholder={label === "Subject" ? "" : "email@example.com"}
       />
       {trailing}

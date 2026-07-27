@@ -44,7 +44,7 @@ export function LoginForm() {
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
           placeholder="Enter inbox password"
           required
         />
@@ -53,7 +53,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900"
+        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
       >
         {loading ? "Signing in..." : "Sign in"}
       </button>
