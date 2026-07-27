@@ -72,8 +72,8 @@ export function ThreadList({
   onStarToggle,
 }: ThreadListProps) {
   return (
-    <aside className="flex w-full max-w-md flex-col border-r border-zinc-200 dark:border-zinc-800">
-      <div className="flex flex-col gap-2 border-b border-zinc-200 p-3 dark:border-zinc-800">
+    <aside className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden border-r border-zinc-200 dark:border-zinc-800">
+      <div className="flex shrink-0 flex-col gap-2 border-b border-zinc-200 p-3 dark:border-zinc-800">
         <button
           type="button"
           onClick={onCompose}
@@ -109,7 +109,7 @@ export function ThreadList({
         />
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {loading && threads.length === 0 ? (
           <SkeletonRows />
         ) : threads.length === 0 ? (

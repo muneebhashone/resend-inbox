@@ -485,9 +485,9 @@ export function InboxApp() {
 
   return (
     <>
-      <div className="flex w-full flex-1 flex-col overflow-hidden lg:flex-row">
+      <div className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden lg:flex-row">
         <div
-          className={`flex min-h-0 flex-1 flex-col lg:max-w-md lg:flex-none ${
+          className={`flex h-full min-h-0 w-full flex-col lg:w-96 lg:shrink-0 ${
             mobileDetail ? "hidden lg:flex" : "flex"
           }`}
         >
@@ -530,7 +530,7 @@ export function InboxApp() {
         </div>
 
         <div
-          className={`min-w-0 flex-1 flex-col ${
+          className={`flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden ${
             mobileDetail ? "flex" : "hidden lg:flex"
           }`}
         >
