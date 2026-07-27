@@ -147,8 +147,18 @@ function FilterPopover({
     function onPointerDown(event: MouseEvent) {
       if (!panelRef.current?.contains(event.target as Node)) onClose();
     }
+    function onKeyDown(event: globalThis.KeyboardEvent) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onClose();
+      }
+    }
     document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
   }, [onClose]);
 
   function submit(event: FormEvent) {
@@ -172,12 +182,12 @@ function FilterPopover({
   }
 
   const fieldClass =
-    "w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-xs max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900";
+    "w-full rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-xs max-sm:text-base focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:border-zinc-700 dark:bg-zinc-900";
 
   return (
     <div
       ref={panelRef}
-      className="absolute right-0 top-full z-30 mt-1 w-72 rounded-lg border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
+      className="motion-slide-down-in absolute right-0 top-full z-30 mt-1 w-72 rounded-lg border border-zinc-200 bg-white p-3 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
     >
       <form onSubmit={submit} className="space-y-2.5">
         <p className="text-xs font-medium text-zinc-700 dark:text-zinc-200">
@@ -274,13 +284,13 @@ function FilterPopover({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md px-2.5 py-1.5 text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            className="rounded-md px-2.5 py-1.5 text-xs text-zinc-500 transition hover:text-zinc-800 dark:hover:text-zinc-200"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-blue-700"
+            className="motion-press rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-blue-700"
           >
             Apply
           </button>
@@ -508,7 +518,7 @@ export function SearchBar({
           {chips.map((op, index) => (
             <span
               key={`${op.kind}-${op.value}-${index}`}
-              className="inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
+              className="motion-chip-in inline-flex max-w-full items-center gap-1 rounded-md bg-zinc-100 px-1.5 py-0.5 text-xs text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200"
             >
               <span className="truncate">{operatorLabel(op)}</span>
               <button
@@ -518,7 +528,7 @@ export function SearchBar({
                   event.stopPropagation();
                   removeChip(index);
                 }}
-                className="rounded px-0.5 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-100"
+                className="relative rounded px-1 py-0.5 text-zinc-400 hover:text-zinc-700 before:absolute before:-inset-1 before:content-[''] dark:hover:text-zinc-100"
               >
                 ×
               </button>
@@ -552,7 +562,7 @@ export function SearchBar({
               setFilterOpen((value) => !value);
               setOpen(false);
             }}
-            className="flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-zinc-300 text-sm text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-700 dark:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-200"
+            className="motion-press flex h-[38px] w-[38px] items-center justify-center rounded-lg border border-zinc-300 text-sm text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-700 dark:border-zinc-700 dark:hover:bg-zinc-900 dark:hover:text-zinc-200"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
               <line x1="2" y1="4" x2="14" y2="4" />
@@ -592,7 +602,7 @@ export function SearchBar({
         <ul
           id={listId}
           role="listbox"
-          className="absolute left-0 right-10 top-full z-20 mt-1 max-h-56 overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
+          className="motion-slide-down-in absolute left-0 right-10 top-full z-20 mt-1 max-h-56 overflow-auto rounded-lg border border-zinc-200 bg-white py-1 shadow-lg dark:border-zinc-700 dark:bg-zinc-950"
         >
           {suggestions.map((suggestion, index) => (
             <li

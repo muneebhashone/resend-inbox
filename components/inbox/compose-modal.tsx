@@ -158,7 +158,7 @@ export function ComposeModal({
 
   if (size === "minimized") {
     return (
-      <div className="fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="motion-minimized-in fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-800 dark:bg-zinc-950">
         <button
           type="button"
           onClick={() => setSize("default")}
@@ -196,7 +196,7 @@ export function ComposeModal({
 
   return (
     <div
-      className={`fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-black/50 ${
+      className={`motion-modal-in fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-700 dark:bg-zinc-900 dark:shadow-black/50 ${
         expanded
           ? "inset-3 rounded-xl sm:inset-6"
           : "bottom-0 right-0 w-full rounded-t-xl sm:bottom-0 sm:right-4 sm:w-[560px] sm:rounded-t-xl"
@@ -211,7 +211,7 @@ export function ComposeModal({
           type="button"
           onClick={() => setSize("minimized")}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 disabled:opacity-40 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           aria-label="Minimize"
         >
           —
@@ -220,7 +220,7 @@ export function ComposeModal({
           type="button"
           onClick={() => setSize(expanded ? "default" : "expanded")}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 disabled:opacity-40 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           aria-label={expanded ? "Restore" : "Expand"}
         >
           {expanded ? "⌟⌜" : "⌜⌟"}
@@ -229,7 +229,7 @@ export function ComposeModal({
           type="button"
           onClick={handleClose}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 hover:text-zinc-800 disabled:opacity-40 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           aria-label="Close"
         >
           ×
@@ -251,12 +251,12 @@ export function ComposeModal({
             trailing={
               <div className="flex gap-2 text-xs text-zinc-500">
                 {!showCc ? (
-                  <button type="button" onClick={() => setShowCc(true)} className="hover:text-zinc-800 dark:hover:text-zinc-200">
+                  <button type="button" onClick={() => setShowCc(true)} className="rounded px-1.5 py-0.5 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
                     Cc
                   </button>
                 ) : null}
                 {!showBcc ? (
-                  <button type="button" onClick={() => setShowBcc(true)} className="hover:text-zinc-800 dark:hover:text-zinc-200">
+                  <button type="button" onClick={() => setShowBcc(true)} className="rounded px-1.5 py-0.5 transition hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-200">
                     Bcc
                   </button>
                 ) : null}
@@ -264,10 +264,10 @@ export function ComposeModal({
             }
           />
           {showCc ? (
-            <RecipientRow label="Cc" value={cc} onChange={setCc} disabled={busy} />
+            <div className="motion-fade-in"><RecipientRow label="Cc" value={cc} onChange={setCc} disabled={busy} /></div>
           ) : null}
           {showBcc ? (
-            <RecipientRow label="Bcc" value={bcc} onChange={setBcc} disabled={busy} />
+            <div className="motion-fade-in"><RecipientRow label="Bcc" value={bcc} onChange={setBcc} disabled={busy} /></div>
           ) : null}
           <RecipientRow
             label="Subject"
@@ -291,20 +291,20 @@ export function ComposeModal({
           />
 
           {showAi ? (
-            <div className="flex gap-2">
+            <div className="motion-fade-in flex gap-2">
               <input
                 type="text"
                 value={instructions}
                 onChange={(event) => setInstructions(event.target.value)}
                 placeholder="Notes for AI draft (tone, points to cover…)"
                 disabled={busy}
-                className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
+                className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:border-zinc-700 dark:bg-zinc-900"
               />
               <button
                 type="button"
                 onClick={() => void handleDraft()}
                 disabled={busy || !subject.trim()}
-                className="rounded-lg border border-zinc-300 px-3 py-2 text-sm disabled:opacity-50 dark:border-zinc-700"
+                className="motion-press rounded-lg border border-zinc-300 px-3 py-2 text-sm transition hover:bg-zinc-50 disabled:opacity-40 dark:border-zinc-700 dark:hover:bg-zinc-800"
               >
                 {drafting ? "Drafting…" : "Draft"}
               </button>
@@ -320,14 +320,14 @@ export function ComposeModal({
             </div>
           ) : null}
 
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? <p className="motion-fade-in text-sm text-red-600">{error}</p> : null}
         </div>
 
         <div className="flex shrink-0 items-center gap-2 border-t border-zinc-200 px-3 py-2.5 dark:border-zinc-800">
           <button
             type="submit"
             disabled={busy || !to.trim() || !subject.trim() || !body.trim()}
-            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
+            className="motion-press rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
           >
             {sending ? "Sending…" : "Send"}
           </button>
@@ -335,7 +335,7 @@ export function ComposeModal({
             type="button"
             onClick={() => setShowAi((value) => !value)}
             disabled={busy}
-            className="rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-900"
+            className="motion-press rounded-lg px-3 py-2 text-sm text-zinc-600 transition hover:bg-zinc-100 disabled:opacity-40 dark:text-zinc-300 dark:hover:bg-zinc-900"
           >
             {showAi ? "Hide AI" : "AI draft"}
           </button>

@@ -79,7 +79,7 @@ export function ThreadList({
         <button
           type="button"
           onClick={onCompose}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
+          className="motion-press rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.97]"
         >
           Compose
         </button>
@@ -90,7 +90,7 @@ export function ThreadList({
               key={item.id}
               type="button"
               onClick={() => onViewChange(item.id)}
-              className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition ${
+              className={`motion-press flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition ${
                 view === item.id
                   ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100"
                   : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
@@ -123,19 +123,20 @@ export function ThreadList({
                   : "No emails yet. Sync from Resend or wait for new inbound mail."}
           </p>
         ) : (
-          threads.map((thread) => {
+          threads.map((thread, index) => {
             const selected = thread.id === selectedId;
             const focused = thread.id === focusedId;
             return (
               <div
                 key={thread.threadId}
-                className={`group relative flex border-b border-zinc-100 transition dark:border-zinc-900 ${
+                className={`motion-row-in group relative flex border-b border-zinc-100 transition dark:border-zinc-900 ${
                   selected
                     ? "bg-blue-50 dark:bg-blue-700/10"
                     : focused
                       ? "bg-zinc-100 dark:bg-zinc-900/60"
                       : "hover:bg-zinc-50 dark:hover:bg-zinc-900/30"
                 }`}
+                style={{ animationDelay: `${Math.min(index * 20, 200)}ms` }}
               >
                 {!thread.isRead ? (
                   <span className="absolute inset-y-0 left-0 w-0.5 bg-blue-600" />
@@ -143,7 +144,7 @@ export function ThreadList({
                 <button
                   type="button"
                   onClick={() => onSelect(thread.id)}
-                  className="min-w-0 flex-1 px-3 py-2.5 text-left"
+                  className="motion-press min-w-0 flex-1 px-3 py-2.5 text-left"
                 >
                   <div className="mb-0.5 flex items-center justify-between gap-2">
                     <span
@@ -193,10 +194,10 @@ export function ThreadList({
                     event.stopPropagation();
                     onStarToggle(thread);
                   }}
-                  className={`shrink-0 px-2 text-sm transition ${
+                  className={`motion-press relative shrink-0 px-2 text-sm transition before:absolute before:inset-0 before:content-[''] ${
                     thread.isStarred
                       ? "text-amber-500"
-                      : "text-zinc-300 opacity-0 group-hover:opacity-100 dark:text-zinc-600"
+                      : "text-zinc-300 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 max-sm:opacity-100 dark:text-zinc-600"
                   }`}
                   aria-label={thread.isStarred ? "Unstar" : "Star"}
                 >

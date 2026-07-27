@@ -18,7 +18,7 @@ export function AttachmentList({ attachments }: { attachments: EmailAttachment[]
           const name = attachment.filename ?? "Attachment";
           const label = attachmentLabel(attachment.contentType, attachment.filename);
           const className =
-            "inline-flex max-w-full items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-2 text-left text-sm transition hover:border-zinc-300 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-900/80";
+            "motion-press inline-flex max-w-full items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-2 text-left text-sm transition hover:border-zinc-300 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700 dark:hover:bg-zinc-900/80";
 
           const inner = (
             <>

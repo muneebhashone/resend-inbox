@@ -15,6 +15,15 @@
   --accent-soft: rgba(194, 117, 25, 0.08);
   --accent-text: #8a4f0c;
   --glow: rgba(194, 117, 25, 0.05);
+
+  /* Motion tokens */
+  --motion-fast: 100ms;
+  --motion-base: 150ms;
+  --motion-normal: 250ms;
+  --motion-slow: 300ms;
+  --motion-page: 400ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @theme inline {
@@ -124,6 +133,84 @@ select:focus-visible,
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
+/* Motion keyframes */
+@keyframes motion-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes motion-slide-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes motion-slide-down-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes motion-modal-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes motion-minimized-in {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes motion-expand {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 600px; }
+}
+
+@keyframes motion-chip-in {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes motion-row-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Motion utility classes */
+.motion-fade-in {
+  animation: motion-fade-in var(--motion-normal) var(--ease-out) both;
+}
+
+.motion-slide-up {
+  animation: motion-slide-up var(--motion-normal) var(--ease-out) both;
+}
+
+.motion-slide-down-in {
+  animation: motion-slide-down-in var(--motion-normal) var(--ease-out) both;
+}
+
+.motion-modal-in {
+  animation: motion-modal-in var(--motion-slow) var(--ease-out) both;
+}
+
+.motion-minimized-in {
+  animation: motion-minimized-in var(--motion-normal) var(--ease-out) both;
+}
+
+.motion-chip-in {
+  animation: motion-chip-in var(--motion-base) var(--ease-out) both;
+}
+
+.motion-row-in {
+  animation: motion-row-in var(--motion-normal) var(--ease-out) both;
+}
+
+/* Press feedback — use on interactive elements */
+.motion-press {
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+.motion-press:active {
+  transform: scale(0.97);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -136,5 +223,8 @@ select:focus-visible,
     animation: none;
     background: var(--accent);
     opacity: 0.2;
+  }
+  .motion-press:active {
+    transform: none;
   }
 }

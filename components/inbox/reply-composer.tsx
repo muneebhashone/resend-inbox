@@ -166,7 +166,7 @@ function ReplyComposerForm({
   return (
     <form
       onSubmit={(event) => void handleSubmit(event)}
-      className="border-t border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-950"
+      className="motion-slide-up border-t border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-950"
     >
       <div className="flex items-center justify-between gap-2 px-4 pt-3">
         <div className="flex items-center gap-2">
@@ -174,7 +174,8 @@ function ReplyComposerForm({
           <button
             type="button"
             onClick={() => setExpanded((value) => !value)}
-            className="text-xs text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            disabled={busy}
+            className="text-xs text-zinc-500 hover:text-zinc-800 disabled:opacity-40 dark:hover:text-zinc-200"
           >
             {expanded ? "Collapse" : "Expand"}
           </button>
@@ -183,7 +184,7 @@ function ReplyComposerForm({
           type="button"
           onClick={onClose}
           disabled={busy}
-          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-800"
+          className="rounded px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-200 disabled:opacity-40 dark:hover:bg-zinc-800"
         >
           Close
         </button>
@@ -198,7 +199,7 @@ function ReplyComposerForm({
               onChange={(event) => setTo(event.target.value)}
               placeholder="To"
               disabled={disabled || busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:border-zinc-700 dark:bg-zinc-900"
             />
             <input
               type="text"
@@ -206,7 +207,7 @@ function ReplyComposerForm({
               onChange={(event) => setSubject(event.target.value)}
               placeholder="Subject"
               disabled={disabled || busy}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm max-sm:text-base focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:border-zinc-700 dark:bg-zinc-900"
             />
           </>
         ) : null}
@@ -219,13 +220,13 @@ function ReplyComposerForm({
               onChange={(event) => setInstructions(event.target.value)}
               placeholder="Notes for draft (optional)"
               disabled={disabled || busy}
-              className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm max-sm:text-base dark:border-zinc-700 dark:bg-zinc-900"
+              className="min-w-0 flex-1 rounded-lg border border-zinc-300 bg-white px-3 py-1.5 text-sm max-sm:text-base focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none dark:border-zinc-700 dark:bg-zinc-900"
             />
             <button
               type="button"
               onClick={() => void handleDraft()}
               disabled={disabled || busy}
-              className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+              className="motion-press rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-700 transition hover:bg-zinc-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               {drafting ? "Drafting..." : "Draft reply"}
             </button>
@@ -247,7 +248,7 @@ function ReplyComposerForm({
         />
 
         {signatureHtml && expanded ? (
-          <div className="rounded-lg border border-dashed border-zinc-300 p-3 dark:border-zinc-700">
+          <div className="motion-fade-in rounded-lg border border-dashed border-zinc-300 p-3 dark:border-zinc-700">
             <p className="mb-2 text-xs font-medium uppercase tracking-wide text-zinc-500">
               Signature
             </p>
@@ -258,14 +259,14 @@ function ReplyComposerForm({
           </div>
         ) : null}
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? <p className="motion-fade-in text-sm text-red-600">{error}</p> : null}
 
         <div className="flex items-center justify-between">
           <p className="text-xs text-zinc-400">⌘/Ctrl + Enter to send</p>
           <button
             type="submit"
             disabled={disabled || busy || !body.trim()}
-            className="rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.98] disabled:opacity-50"
+            className="motion-press rounded-full bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 active:scale-[0.97] disabled:opacity-50"
           >
             {sending ? "Sending..." : "Send"}
           </button>

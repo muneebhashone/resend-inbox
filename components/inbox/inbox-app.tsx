@@ -494,14 +494,14 @@ export function InboxApp() {
               type="button"
               onClick={() => void handleSync()}
               disabled={syncing}
-              className="rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
+              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
             >
               {syncing ? "Syncing..." : "Sync"}
             </button>
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
             >
               Logout
             </button>
@@ -537,14 +537,14 @@ export function InboxApp() {
               type="button"
               onClick={() => void handleSync()}
               disabled={syncing}
-              className="rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
+              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 disabled:opacity-50 dark:hover:bg-zinc-900"
             >
               {syncing ? "Syncing..." : "Sync from Resend"}
             </button>
             <button
               type="button"
               onClick={() => void handleLogout()}
-              className="rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
+              className="motion-press rounded-md px-3 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900"
             >
               Logout
             </button>

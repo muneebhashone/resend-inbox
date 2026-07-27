@@ -30,7 +30,7 @@ function ToolbarButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition disabled:opacity-40 ${
+      className={`motion-press rounded-md px-2.5 py-1.5 text-xs font-medium transition disabled:opacity-40 ${
         active
           ? "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200"
           : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-900"
@@ -55,7 +55,7 @@ export function ActionToolbar({
   onBack,
 }: ActionToolbarProps) {
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
+    <div className="motion-fade-in flex flex-wrap items-center gap-1 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800">
       {onBack ? (
         <span className="lg:hidden">
           <ToolbarButton label="← Back" onClick={onBack} disabled={disabled} />

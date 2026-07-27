@@ -67,7 +67,7 @@ function MessageCard({
       <button
         type="button"
         onClick={onToggle}
-        className="flex w-full items-center gap-3 border-b border-zinc-100 px-1 py-2.5 text-left transition hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/40"
+        className="motion-press flex w-full items-center gap-3 border-b border-zinc-100 px-1 py-2.5 text-left transition hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/40"
       >
         <span className="w-36 shrink-0 truncate text-sm font-medium">
           {displayName(message.from)}
@@ -94,7 +94,7 @@ function MessageCard({
       <button
         type="button"
         onClick={onToggle}
-        className="mb-3 flex w-full items-start justify-between gap-3 text-left"
+        className="motion-press mb-3 flex w-full items-start justify-between gap-3 text-left"
       >
         <div>
           <p className="text-sm font-medium">{message.from}</p>
@@ -148,7 +148,7 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
   if (!email) {
     return (
       <section className="flex flex-1 items-center justify-center px-4">
-        <div className="max-w-xs text-center">
+        <div className="motion-fade-in max-w-xs text-center">
           <p className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
             No conversation selected
           </p>
@@ -179,7 +179,7 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
         </div>
       ) : null}
 
-      <div className="shrink-0 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
+      <div className="motion-fade-in shrink-0 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
         <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
           <span className="min-w-0 truncate">{email.subject || "(no subject)"}</span>
           {threadHasAttachments ? (
@@ -192,13 +192,18 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
       </div>
 
       <div className="flex-1 overflow-y-auto px-4 sm:px-6">
-        {thread.map((message) => (
-          <MessageCard
+        {thread.map((message, index) => (
+          <div
             key={message.id}
-            message={message}
-            expanded={expandedIds.has(message.id)}
-            onToggle={() => toggle(message.id)}
-          />
+            className="motion-fade-in"
+            style={{ animationDelay: `${Math.min(index * 40, 200)}ms` }}
+          >
+            <MessageCard
+              message={message}
+              expanded={expandedIds.has(message.id)}
+              onToggle={() => toggle(message.id)}
+            />
+          </div>
         ))}
       </div>
     </section>

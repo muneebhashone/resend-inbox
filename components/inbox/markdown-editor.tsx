@@ -41,7 +41,7 @@ function ToolbarButton({
       title={title}
       onClick={onClick}
       disabled={disabled}
-      className="rounded px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-40 dark:text-zinc-300 dark:hover:bg-zinc-800"
+      className="motion-press rounded px-2 py-1 text-xs font-medium text-zinc-600 hover:bg-zinc-100 disabled:opacity-40 dark:text-zinc-300 dark:hover:bg-zinc-800"
     >
       {label}
     </button>
@@ -140,7 +140,7 @@ export function MarkdownEditor({
               key={item}
               type="button"
               onClick={() => setMode(item)}
-              className={`rounded px-2 py-1 text-xs font-medium capitalize ${
+              className={`motion-press rounded px-2 py-1 text-xs font-medium capitalize ${
                 mode === item
                   ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-950 dark:text-zinc-100"
                   : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
@@ -171,7 +171,7 @@ export function MarkdownEditor({
       </div>
 
       {pasteHint ? (
-        <div className="border-b border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
+        <div className="motion-fade-in border-b border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs text-emerald-800 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-200">
           {pasteHint}
         </div>
       ) : null}
