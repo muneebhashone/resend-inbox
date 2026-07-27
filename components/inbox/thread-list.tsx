@@ -1,6 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
+import { SearchBar } from "@/components/inbox/search-bar";
 import { PaperclipIcon } from "@/lib/attachments";
 import type { InboxView, ThreadSummary } from "@/lib/types";
 
@@ -100,13 +101,11 @@ export function ThreadList({
           ))}
         </div>
 
-        <input
-          ref={searchRef}
-          type="search"
-          value={query}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Search subject or sender..."
-          className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+        <SearchBar
+          query={query}
+          searchRef={searchRef}
+          senderSuggestions={threads.map((thread) => thread.from)}
+          onQueryChange={onQueryChange}
         />
       </div>
 
@@ -115,11 +114,13 @@ export function ThreadList({
           <SkeletonRows />
         ) : threads.length === 0 ? (
           <p className="p-4 text-sm text-zinc-500">
-            {view === "starred"
-              ? "No starred conversations."
-              : view === "archived"
-                ? "No archived conversations."
-                : "No emails yet. Sync from Resend or wait for new inbound mail."}
+            {query
+              ? "No conversations match your search."
+              : view === "starred"
+                ? "No starred conversations."
+                : view === "archived"
+                  ? "No archived conversations."
+                  : "No emails yet. Sync from Resend or wait for new inbound mail."}
           </p>
         ) : (
           threads.map((thread) => {
@@ -147,7 +148,9 @@ export function ThreadList({
                   <div className="mb-0.5 flex items-center justify-between gap-2">
                     <span
                       className={`truncate text-[13px] ${
-                        thread.isRead ? "font-normal text-zinc-700 dark:text-zinc-300" : "font-semibold"
+                        thread.isRead
+                          ? "font-normal text-zinc-700 dark:text-zinc-300"
+                          : "font-semibold"
                       }`}
                     >
                       {thread.from}
@@ -169,7 +172,9 @@ export function ThreadList({
                     {thread.subject || "(no subject)"}
                   </div>
                   <div className="mt-0.5 flex items-center gap-2">
-                    <p className="truncate text-[11px] text-zinc-500">{thread.snippet}</p>
+                    <p className="truncate text-[11px] text-zinc-500">
+                      {thread.snippet}
+                    </p>
                     {thread.unreadCount > 0 ? (
                       <span className="rounded-full bg-blue-600 px-1.5 py-0.5 text-[10px] font-medium text-white">
                         {thread.unreadCount}

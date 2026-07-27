@@ -1,8 +1,9 @@
-import { and, desc, eq, isNull, like, or } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { hasAttachmentsJson } from "@/lib/attachments";
 import { db } from "@/lib/db";
 import { emails } from "@/lib/db/schema";
+import { buildSearchFilterFromQuery } from "@/lib/search/build-filter";
 import type { InboxView } from "@/lib/types";
 
 export async function GET(request: Request) {
@@ -17,13 +18,7 @@ export async function GET(request: Request) {
         ? and(eq(emails.isArchived, true), isNull(emails.deletedAt))
         : and(eq(emails.isArchived, false), isNull(emails.deletedAt));
 
-  const searchFilter = q
-    ? or(
-        like(emails.subject, `%${q}%`),
-        like(emails.from, `%${q}%`),
-        like(emails.snippet, `%${q}%`),
-      )
-    : undefined;
+  const searchFilter = q ? buildSearchFilterFromQuery(q) : undefined;
 
   const allEmails = await db
     .select()
