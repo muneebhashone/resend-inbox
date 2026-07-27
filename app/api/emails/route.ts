@@ -1,5 +1,6 @@
 import { and, desc, eq, isNull, like, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { hasAttachmentsJson } from "@/lib/attachments";
 import { db } from "@/lib/db";
 import { emails } from "@/lib/db/schema";
 import type { InboxView } from "@/lib/types";
@@ -39,11 +40,14 @@ export async function GET(request: Request) {
       messageCount: number;
       isStarred: boolean;
       isArchived: boolean;
+      hasAttachments: boolean;
     }
   >();
 
   for (const email of allEmails) {
     const existing = threadMap.get(email.threadId);
+    const attached = hasAttachmentsJson(email.attachments);
+
     if (!existing) {
       threadMap.set(email.threadId, {
         threadId: email.threadId,
@@ -52,6 +56,7 @@ export async function GET(request: Request) {
         messageCount: 1,
         isStarred: email.isStarred,
         isArchived: email.isArchived,
+        hasAttachments: attached,
       });
       continue;
     }
@@ -60,6 +65,7 @@ export async function GET(request: Request) {
     if (!email.isRead) existing.unreadCount += 1;
     if (email.isStarred) existing.isStarred = true;
     if (email.isArchived) existing.isArchived = true;
+    if (attached) existing.hasAttachments = true;
   }
 
   const threads = Array.from(threadMap.values()).sort(
@@ -68,7 +74,15 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     threads: threads.map(
-      ({ threadId, latestEmail, unreadCount, messageCount, isStarred, isArchived }) => ({
+      ({
+        threadId,
+        latestEmail,
+        unreadCount,
+        messageCount,
+        isStarred,
+        isArchived,
+        hasAttachments,
+      }) => ({
         threadId,
         id: latestEmail.id,
         subject: latestEmail.subject,
@@ -78,6 +92,7 @@ export async function GET(request: Request) {
         isRead: unreadCount === 0,
         isStarred,
         isArchived,
+        hasAttachments,
         unreadCount,
         messageCount,
         direction: latestEmail.direction,

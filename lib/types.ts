@@ -41,6 +41,7 @@ export type ThreadSummary = {
   isRead: boolean;
   isStarred: boolean;
   isArchived: boolean;
+  hasAttachments: boolean;
   unreadCount: number;
   messageCount: number;
   direction: "inbound" | "outbound";

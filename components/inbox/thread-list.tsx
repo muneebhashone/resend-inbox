@@ -1,6 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
+import { PaperclipIcon } from "@/lib/attachments";
 import type { InboxView, ThreadSummary } from "@/lib/types";
 
 type ThreadListProps = {
@@ -151,7 +152,10 @@ export function ThreadList({
                     >
                       {thread.from}
                     </span>
-                    <span className="shrink-0 text-[11px] text-zinc-500">
+                    <span className="flex shrink-0 items-center gap-1.5 text-[11px] text-zinc-500">
+                      {thread.hasAttachments ? (
+                        <PaperclipIcon className="h-3 w-3 text-zinc-400" />
+                      ) : null}
                       {formatDate(thread.createdAt)}
                     </span>
                   </div>

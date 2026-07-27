@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AttachmentList } from "@/components/inbox/attachment-list";
+import { PaperclipIcon } from "@/lib/attachments";
 import type { Email } from "@/lib/types";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -58,6 +60,7 @@ function MessageCard({
   onToggle: () => void;
 }) {
   const outbound = message.direction === "outbound";
+  const attached = message.attachments.length > 0;
 
   if (!expanded) {
     return (
@@ -72,6 +75,9 @@ function MessageCard({
         <span className="min-w-0 flex-1 truncate text-sm text-zinc-500">
           {message.snippet || "(no preview)"}
         </span>
+        {attached ? (
+          <PaperclipIcon className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
+        ) : null}
         <span className="shrink-0 text-xs text-zinc-400">
           {formatShortDate(message.createdAt)}
         </span>
@@ -98,33 +104,15 @@ function MessageCard({
           </p>
         </div>
         <div className="shrink-0 text-right text-xs text-zinc-500">
-          <p>{formatShortDate(message.createdAt)}</p>
+          <p className="flex items-center justify-end gap-1.5">
+            {attached ? <PaperclipIcon className="h-3.5 w-3.5 text-zinc-400" /> : null}
+            {formatShortDate(message.createdAt)}
+          </p>
           <p className="mt-0.5">{outbound ? "Sent" : "Received"}</p>
         </div>
       </button>
       <EmailBody email={message} />
-      {message.attachments.length > 0 ? (
-        <ul className="mt-4 space-y-1.5 border-t border-zinc-100 pt-3 dark:border-zinc-900">
-          {message.attachments.map((attachment) => (
-            <li key={attachment.id}>
-              {attachment.downloadUrl ? (
-                <a
-                  href={attachment.downloadUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  {attachment.filename ?? "Attachment"}
-                </a>
-              ) : (
-                <span className="text-sm text-zinc-500">
-                  {attachment.filename ?? "Attachment"}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <AttachmentList attachments={message.attachments} />
     </article>
   );
 }
@@ -174,6 +162,8 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
     });
   }
 
+  const threadHasAttachments = thread.some((message) => message.attachments.length > 0);
+
   return (
     <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
       {refreshing ? (
@@ -183,8 +173,11 @@ export function EmailView({ email, thread, loading, refreshing }: EmailViewProps
       ) : null}
 
       <div className="shrink-0 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
-        <h2 className="text-lg font-semibold tracking-tight sm:text-xl">
-          {email.subject || "(no subject)"}
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
+          <span className="min-w-0 truncate">{email.subject || "(no subject)"}</span>
+          {threadHasAttachments ? (
+            <PaperclipIcon className="h-4 w-4 shrink-0 text-zinc-400" />
+          ) : null}
         </h2>
         {thread.length > 1 ? (
           <p className="mt-1 text-xs text-zinc-500">{thread.length} messages</p>
