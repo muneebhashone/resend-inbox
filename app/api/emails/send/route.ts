@@ -10,14 +10,19 @@ export async function POST(request: Request) {
       subject?: string;
       bodyHtml: string;
       replyToEmailId?: string;
-      mode?: "reply" | "reply-all" | "compose";
+      mode?: "reply" | "reply-all" | "compose" | "forward";
     };
 
     if (!body.bodyHtml?.trim()) {
       return NextResponse.json({ error: "Message body is required" }, { status: 400 });
     }
 
-    if (!body.replyToEmailId && (!body.to?.length || !body.subject?.trim())) {
+    const needsRecipients =
+      !body.replyToEmailId ||
+      body.mode === "compose" ||
+      body.mode === "forward";
+
+    if (needsRecipients && (!body.to?.length || !body.subject?.trim())) {
       return NextResponse.json(
         { error: "To and subject are required for new emails" },
         { status: 400 },

@@ -27,6 +27,9 @@ export const emails = sqliteTable("emails", {
   snippet: text("snippet").notNull().default(""),
   attachments: text("attachments").notNull().default("[]"),
   isRead: integer("is_read", { mode: "boolean" }).notNull().default(false),
+  isStarred: integer("is_starred", { mode: "boolean" }).notNull().default(false),
+  isArchived: integer("is_archived", { mode: "boolean" }).notNull().default(false),
+  deletedAt: integer("deleted_at", { mode: "timestamp_ms" }),
   createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull(),
 });
 

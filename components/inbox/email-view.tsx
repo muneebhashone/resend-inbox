@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import type { Email } from "@/lib/types";
 import { sanitizeHtml } from "@/lib/sanitize";
 
@@ -7,10 +8,25 @@ type EmailViewProps = {
   email: Email | null;
   thread: Email[];
   loading: boolean;
+  refreshing?: boolean;
 };
 
 function formatRecipients(values: string[]) {
   return values.length > 0 ? values.join(", ") : "—";
+}
+
+function formatShortDate(value: string) {
+  return new Date(value).toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function displayName(from: string) {
+  const match = from.match(/^"?([^"<]+)"?\s*</);
+  return match?.[1]?.trim() || from;
 }
 
 function EmailBody({ email }: { email: Email }) {
@@ -25,18 +41,118 @@ function EmailBody({ email }: { email: Email }) {
 
   if (email.text) {
     return (
-      <pre className="whitespace-pre-wrap font-sans text-sm">{email.text}</pre>
+      <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed">{email.text}</pre>
     );
   }
 
   return <p className="text-sm text-zinc-500">No content</p>;
 }
 
-export function EmailView({ email, thread, loading }: EmailViewProps) {
-  if (loading) {
+function MessageCard({
+  message,
+  expanded,
+  onToggle,
+}: {
+  message: Email;
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const outbound = message.direction === "outbound";
+
+  if (!expanded) {
     return (
-      <section className="flex flex-1 items-center justify-center text-sm text-zinc-500">
-        Loading email...
+      <button
+        type="button"
+        onClick={onToggle}
+        className="flex w-full items-center gap-3 border-b border-zinc-100 px-1 py-2.5 text-left transition hover:bg-zinc-50 dark:border-zinc-900 dark:hover:bg-zinc-900/40"
+      >
+        <span className="w-36 shrink-0 truncate text-sm font-medium">
+          {displayName(message.from)}
+        </span>
+        <span className="min-w-0 flex-1 truncate text-sm text-zinc-500">
+          {message.snippet || "(no preview)"}
+        </span>
+        <span className="shrink-0 text-xs text-zinc-400">
+          {formatShortDate(message.createdAt)}
+        </span>
+      </button>
+    );
+  }
+
+  return (
+    <article
+      className={`border-b border-zinc-100 py-4 dark:border-zinc-900 ${
+        outbound ? "pl-2 sm:pl-6" : ""
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        className="mb-3 flex w-full items-start justify-between gap-3 text-left"
+      >
+        <div>
+          <p className="text-sm font-medium">{message.from}</p>
+          <p className="mt-0.5 text-xs text-zinc-500">
+            To: {formatRecipients(message.to)}
+            {message.cc.length > 0 ? ` · Cc: ${formatRecipients(message.cc)}` : ""}
+          </p>
+        </div>
+        <div className="shrink-0 text-right text-xs text-zinc-500">
+          <p>{formatShortDate(message.createdAt)}</p>
+          <p className="mt-0.5">{outbound ? "Sent" : "Received"}</p>
+        </div>
+      </button>
+      <EmailBody email={message} />
+      {message.attachments.length > 0 ? (
+        <ul className="mt-4 space-y-1.5 border-t border-zinc-100 pt-3 dark:border-zinc-900">
+          {message.attachments.map((attachment) => (
+            <li key={attachment.id}>
+              {attachment.downloadUrl ? (
+                <a
+                  href={attachment.downloadUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  {attachment.filename ?? "Attachment"}
+                </a>
+              ) : (
+                <span className="text-sm text-zinc-500">
+                  {attachment.filename ?? "Attachment"}
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </article>
+  );
+}
+
+export function EmailView({ email, thread, loading, refreshing }: EmailViewProps) {
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (thread.length === 0) {
+      setExpandedIds(new Set());
+      return;
+    }
+    const latest = thread[thread.length - 1];
+    setExpandedIds(new Set([latest.id]));
+  }, [thread]);
+
+  if (!email && loading) {
+    return (
+      <section className="flex flex-1 flex-col p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800" />
+          <div className="h-3 w-1/3 rounded bg-zinc-100 dark:bg-zinc-900" />
+          <div className="mt-8 space-y-2">
+            <div className="h-3 w-full rounded bg-zinc-100 dark:bg-zinc-900" />
+            <div className="h-3 w-5/6 rounded bg-zinc-100 dark:bg-zinc-900" />
+            <div className="h-3 w-4/6 rounded bg-zinc-100 dark:bg-zinc-900" />
+          </div>
+        </div>
       </section>
     );
   }
@@ -49,71 +165,40 @@ export function EmailView({ email, thread, loading }: EmailViewProps) {
     );
   }
 
+  function toggle(id: string) {
+    setExpandedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
   return (
-    <section className="flex flex-1 flex-col overflow-hidden">
-      <div className="border-b border-zinc-200 p-6 dark:border-zinc-800">
-        <h2 className="text-xl font-semibold">{email.subject || "(no subject)"}</h2>
-        <div className="mt-3 space-y-1 text-sm text-zinc-600 dark:text-zinc-400">
-          <p>
-            <span className="font-medium text-zinc-900 dark:text-zinc-100">From:</span>{" "}
-            {email.from}
-          </p>
-          <p>
-            <span className="font-medium text-zinc-900 dark:text-zinc-100">To:</span>{" "}
-            {formatRecipients(email.to)}
-          </p>
-          {email.cc.length > 0 ? (
-            <p>
-              <span className="font-medium text-zinc-900 dark:text-zinc-100">Cc:</span>{" "}
-              {formatRecipients(email.cc)}
-            </p>
-          ) : null}
-          <p>
-            <span className="font-medium text-zinc-900 dark:text-zinc-100">Date:</span>{" "}
-            {new Date(email.createdAt).toLocaleString()}
-          </p>
+    <section className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+      {refreshing ? (
+        <div className="absolute inset-x-0 top-0 z-10 h-0.5 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+          <div className="inbox-progress-bar h-full w-1/3 bg-blue-500" />
         </div>
+      ) : null}
+
+      <div className="shrink-0 border-b border-zinc-200 px-4 py-4 dark:border-zinc-800 sm:px-6">
+        <h2 className="text-lg font-semibold tracking-tight sm:text-xl">
+          {email.subject || "(no subject)"}
+        </h2>
+        {thread.length > 1 ? (
+          <p className="mt-1 text-xs text-zinc-500">{thread.length} messages</p>
+        ) : null}
       </div>
 
-      <div className="flex-1 space-y-6 overflow-y-auto p-6">
+      <div className="flex-1 overflow-y-auto px-4 sm:px-6">
         {thread.map((message) => (
-          <article
+          <MessageCard
             key={message.id}
-            className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800"
-          >
-            <div className="mb-3 flex items-center justify-between gap-3 text-sm">
-              <div>
-                <p className="font-medium">{message.from}</p>
-                <p className="text-xs text-zinc-500">
-                  {new Date(message.createdAt).toLocaleString()}
-                  {message.direction === "outbound" ? " · Sent" : " · Received"}
-                </p>
-              </div>
-            </div>
-            <EmailBody email={message} />
-            {message.attachments.length > 0 ? (
-              <ul className="mt-4 space-y-2 border-t border-zinc-100 pt-4 dark:border-zinc-900">
-                {message.attachments.map((attachment) => (
-                  <li key={attachment.id}>
-                    {attachment.downloadUrl ? (
-                      <a
-                        href={attachment.downloadUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-sm text-blue-600 hover:underline"
-                      >
-                        {attachment.filename ?? "Attachment"}
-                      </a>
-                    ) : (
-                      <span className="text-sm text-zinc-500">
-                        {attachment.filename ?? "Attachment"}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : null}
-          </article>
+            message={message}
+            expanded={expandedIds.has(message.id)}
+            onToggle={() => toggle(message.id)}
+          />
         ))}
       </div>
     </section>

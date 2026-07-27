@@ -23,8 +23,13 @@ export type Email = {
   snippet: string;
   attachments: EmailAttachment[];
   isRead: boolean;
+  isStarred: boolean;
+  isArchived: boolean;
+  deletedAt: string | null;
   createdAt: string;
 };
+
+export type InboxView = "inbox" | "starred" | "archived";
 
 export type ThreadSummary = {
   threadId: string;
@@ -34,10 +39,22 @@ export type ThreadSummary = {
   snippet: string;
   createdAt: string;
   isRead: boolean;
+  isStarred: boolean;
+  isArchived: boolean;
   unreadCount: number;
   messageCount: number;
   direction: "inbound" | "outbound";
 };
+
+export type EmailAction =
+  | "archive"
+  | "unarchive"
+  | "trash"
+  | "restore"
+  | "star"
+  | "unstar"
+  | "read"
+  | "unread";
 
 export type Settings = {
   id: string;

@@ -2,9 +2,11 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { emails } from "@/lib/db/schema";
+import { applyEmailStar } from "@/lib/email/actions";
 import {
   getThreadEmails,
   markThreadRead,
+  markThreadUnread,
   serializeEmail,
 } from "@/lib/email/queries";
 
@@ -33,7 +35,10 @@ export async function GET(_request: Request, context: RouteContext) {
 
 export async function PATCH(request: Request, context: RouteContext) {
   const { id } = await context.params;
-  const body = (await request.json()) as { isRead?: boolean };
+  const body = (await request.json()) as {
+    isRead?: boolean;
+    isStarred?: boolean;
+  };
 
   const email = await db.query.emails.findFirst({
     where: eq(emails.id, id),
@@ -46,7 +51,11 @@ export async function PATCH(request: Request, context: RouteContext) {
   if (body.isRead === true) {
     await markThreadRead(email.threadId);
   } else if (body.isRead === false) {
-    await db.update(emails).set({ isRead: false }).where(eq(emails.id, id));
+    await markThreadUnread(email.threadId);
+  }
+
+  if (typeof body.isStarred === "boolean") {
+    await applyEmailStar(id, body.isStarred);
   }
 
   const updated = await db.query.emails.findFirst({

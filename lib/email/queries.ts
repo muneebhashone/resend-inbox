@@ -22,6 +22,9 @@ export function serializeEmail(email: typeof emails.$inferSelect) {
     snippet: email.snippet,
     attachments: JSON.parse(email.attachments) as EmailAttachment[],
     isRead: email.isRead,
+    isStarred: email.isStarred,
+    isArchived: email.isArchived,
+    deletedAt: email.deletedAt ? email.deletedAt.toISOString() : null,
     createdAt: email.createdAt.toISOString(),
   };
 }
@@ -38,5 +41,12 @@ export async function markThreadRead(threadId: string) {
   await db
     .update(emails)
     .set({ isRead: true })
+    .where(eq(emails.threadId, threadId));
+}
+
+export async function markThreadUnread(threadId: string) {
+  await db
+    .update(emails)
+    .set({ isRead: false })
     .where(eq(emails.threadId, threadId));
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 
 type ComposeModalProps = {
   open: boolean;
@@ -22,6 +22,13 @@ export function ComposeModal({
   const [sending, setSending] = useState(false);
   const [drafting, setDrafting] = useState(false);
   const [error, setError] = useState("");
+  const toRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (open) {
+      requestAnimationFrame(() => toRef.current?.focus());
+    }
+  }, [open]);
 
   if (!open) return null;
 
@@ -63,8 +70,8 @@ export function ComposeModal({
     setDrafting(false);
   }
 
-  async function handleSubmit(event: FormEvent) {
-    event.preventDefault();
+  async function handleSubmit(event?: FormEvent) {
+    event?.preventDefault();
     setSending(true);
     setError("");
 
@@ -98,8 +105,8 @@ export function ComposeModal({
   const busy = sending || drafting;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-zinc-950">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-0 sm:items-center sm:p-4">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-t-2xl bg-white p-6 shadow-xl sm:rounded-2xl dark:bg-zinc-950">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Compose</h2>
           <button
@@ -112,10 +119,14 @@ export function ComposeModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(event) => void handleSubmit(event)}
+          className="space-y-4"
+        >
           <div>
             <label className="mb-1 block text-sm font-medium">To</label>
             <input
+              ref={toRef}
               value={to}
               onChange={(event) => setTo(event.target.value)}
               placeholder="recipient@example.com, another@example.com"
@@ -162,11 +173,18 @@ export function ComposeModal({
             <textarea
               value={bodyHtml}
               onChange={(event) => setBodyHtml(event.target.value)}
+              onKeyDown={(event) => {
+                if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+                  event.preventDefault();
+                  void handleSubmit();
+                }
+              }}
               rows={8}
               disabled={busy}
               className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
               required
             />
+            <p className="mt-1 text-[11px] text-zinc-400">⌘/Ctrl + Enter to send</p>
           </div>
 
           {signatureHtml ? (

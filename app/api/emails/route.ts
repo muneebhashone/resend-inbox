@@ -1,24 +1,33 @@
-import { desc, like, or } from "drizzle-orm";
+import { and, desc, eq, isNull, like, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { emails } from "@/lib/db/schema";
+import type { InboxView } from "@/lib/types";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.trim();
+  const view = (searchParams.get("view") ?? "inbox") as InboxView;
+
+  const viewFilter =
+    view === "starred"
+      ? and(eq(emails.isStarred, true), isNull(emails.deletedAt))
+      : view === "archived"
+        ? and(eq(emails.isArchived, true), isNull(emails.deletedAt))
+        : and(eq(emails.isArchived, false), isNull(emails.deletedAt));
+
+  const searchFilter = q
+    ? or(
+        like(emails.subject, `%${q}%`),
+        like(emails.from, `%${q}%`),
+        like(emails.snippet, `%${q}%`),
+      )
+    : undefined;
 
   const allEmails = await db
     .select()
     .from(emails)
-    .where(
-      q
-        ? or(
-            like(emails.subject, `%${q}%`),
-            like(emails.from, `%${q}%`),
-            like(emails.snippet, `%${q}%`),
-          )
-        : undefined,
-    )
+    .where(and(viewFilter, searchFilter))
     .orderBy(desc(emails.createdAt));
 
   const threadMap = new Map<
@@ -28,6 +37,8 @@ export async function GET(request: Request) {
       latestEmail: (typeof allEmails)[number];
       unreadCount: number;
       messageCount: number;
+      isStarred: boolean;
+      isArchived: boolean;
     }
   >();
 
@@ -39,12 +50,16 @@ export async function GET(request: Request) {
         latestEmail: email,
         unreadCount: email.isRead ? 0 : 1,
         messageCount: 1,
+        isStarred: email.isStarred,
+        isArchived: email.isArchived,
       });
       continue;
     }
 
     existing.messageCount += 1;
     if (!email.isRead) existing.unreadCount += 1;
+    if (email.isStarred) existing.isStarred = true;
+    if (email.isArchived) existing.isArchived = true;
   }
 
   const threads = Array.from(threadMap.values()).sort(
@@ -52,17 +67,21 @@ export async function GET(request: Request) {
   );
 
   return NextResponse.json({
-    threads: threads.map(({ threadId, latestEmail, unreadCount, messageCount }) => ({
-      threadId,
-      id: latestEmail.id,
-      subject: latestEmail.subject,
-      from: latestEmail.from,
-      snippet: latestEmail.snippet,
-      createdAt: latestEmail.createdAt.toISOString(),
-      isRead: unreadCount === 0,
-      unreadCount,
-      messageCount,
-      direction: latestEmail.direction,
-    })),
+    threads: threads.map(
+      ({ threadId, latestEmail, unreadCount, messageCount, isStarred, isArchived }) => ({
+        threadId,
+        id: latestEmail.id,
+        subject: latestEmail.subject,
+        from: latestEmail.from,
+        snippet: latestEmail.snippet,
+        createdAt: latestEmail.createdAt.toISOString(),
+        isRead: unreadCount === 0,
+        isStarred,
+        isArchived,
+        unreadCount,
+        messageCount,
+        direction: latestEmail.direction,
+      }),
+    ),
   });
 }

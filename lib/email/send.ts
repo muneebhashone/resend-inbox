@@ -22,7 +22,7 @@ type SendEmailInput = {
   subject: string;
   bodyHtml: string;
   replyToEmailId?: string;
-  mode?: "reply" | "reply-all" | "compose";
+  mode?: "reply" | "reply-all" | "compose" | "forward";
 };
 
 export async function sendEmail(input: SendEmailInput) {
@@ -65,7 +65,13 @@ export async function sendEmail(input: SendEmailInput) {
     const originalCc = parseJsonArray(original.cc);
     const fromAddress = config.fromEmail.toLowerCase();
 
-    if (mode === "reply") {
+    if (mode === "forward") {
+      to = input.to;
+      cc = input.cc ?? [];
+      subject = input.subject || `Fwd: ${original.subject}`;
+      inReplyTo = undefined;
+      references = undefined;
+    } else if (mode === "reply") {
       to = [original.from];
       cc = [];
     } else if (mode === "reply-all") {
