@@ -528,7 +528,7 @@ export function InboxApp() {
         </div>
 
         <div
-          className={`flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden ${
+          className={`flex h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-white/50 dark:bg-zinc-950/20 ${
             mobileDetail ? "flex" : "hidden lg:flex"
           }`}
         >

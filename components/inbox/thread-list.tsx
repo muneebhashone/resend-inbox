@@ -73,17 +73,17 @@ export function ThreadList({
   onStarToggle,
 }: ThreadListProps) {
   return (
-    <aside className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden border-r border-zinc-200 dark:border-zinc-800">
-      <div className="flex shrink-0 flex-col gap-2 border-b border-zinc-200 p-3 dark:border-zinc-800">
+    <aside className="flex h-full min-h-0 w-full flex-1 flex-col overflow-hidden border-r border-zinc-200/80 bg-white/40 dark:border-zinc-800/80 dark:bg-zinc-950/30">
+      <div className="flex shrink-0 flex-col gap-2 border-b border-zinc-200/80 p-3 dark:border-zinc-800/80">
         <button
           type="button"
           onClick={onCompose}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white dark:bg-zinc-100 dark:text-zinc-900"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700"
         >
           Compose
         </button>
 
-        <div className="flex gap-1">
+        <div className="flex gap-1 rounded-lg bg-zinc-100/80 p-0.5 dark:bg-zinc-900/80">
           {VIEWS.map((item) => (
             <button
               key={item.id}
@@ -91,8 +91,8 @@ export function ThreadList({
               onClick={() => onViewChange(item.id)}
               className={`flex-1 rounded-md px-2 py-1.5 text-xs font-medium transition ${
                 view === item.id
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-900"
+                  ? "bg-white text-zinc-900 shadow-sm dark:bg-zinc-800 dark:text-zinc-100"
+                  : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
               }`}
             >
               {item.label}
@@ -128,12 +128,12 @@ export function ThreadList({
             return (
               <div
                 key={thread.threadId}
-                className={`group relative flex border-b border-zinc-100 transition dark:border-zinc-900 ${
+                className={`group relative flex border-b border-zinc-100/80 transition dark:border-zinc-900/80 ${
                   selected
-                    ? "bg-zinc-100 dark:bg-zinc-900"
+                    ? "bg-blue-600/10 dark:bg-blue-500/10"
                     : focused
-                      ? "bg-zinc-50 dark:bg-zinc-900/50"
-                      : "hover:bg-zinc-50 dark:hover:bg-zinc-900/60"
+                      ? "bg-zinc-100/80 dark:bg-zinc-900/60"
+                      : "hover:bg-zinc-100/70 dark:hover:bg-zinc-900/40"
                 }`}
               >
                 {!thread.isRead ? (

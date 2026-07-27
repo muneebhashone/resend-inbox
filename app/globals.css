@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
+/*
+  Soft graphite palette — dark-first, lifted surfaces, calm azure accent.
+  Remaps zinc/blue so existing utilities inherit the new look.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f3f4f7;
+  --foreground: #1a1d26;
+  --surface: #ffffff;
+  --surface-elevated: #ffffff;
+  --border-subtle: #e2e5ec;
+  --accent: #3d7aef;
+  --accent-soft: #e8effc;
+  --glow: rgba(61, 122, 239, 0.08);
 }
 
 @theme inline {
@@ -10,19 +20,58 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Softer zinc: cool graphite instead of pure black */
+  --color-zinc-50: #f6f7f9;
+  --color-zinc-100: #eceef3;
+  --color-zinc-200: #dcdfe7;
+  --color-zinc-300: #c3c8d4;
+  --color-zinc-400: #959bab;
+  --color-zinc-500: #727889;
+  --color-zinc-600: #5a6070;
+  --color-zinc-700: #434856;
+  --color-zinc-800: #2f3340;
+  --color-zinc-900: #22252f;
+  --color-zinc-950: #161922;
+
+  /* Calmer azure accent */
+  --color-blue-500: #5b8fff;
+  --color-blue-600: #3d7aef;
+  --color-blue-700: #2f64d4;
+
+  --color-amber-500: #d4a017;
+  --color-amber-100: #faf3dc;
+  --color-amber-200: #f0e0a8;
+  --color-amber-800: #7a5c10;
+  --color-amber-950: #2e240c;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #161922;
+    --foreground: #e8eaef;
+    --surface: #1c1f2a;
+    --surface-elevated: #242833;
+    --border-subtle: #2f3340;
+    --accent: #6b9aff;
+    --accent-soft: rgba(107, 154, 255, 0.12);
+    --glow: rgba(107, 154, 255, 0.14);
+    color-scheme: dark;
   }
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(1200px 600px at 10% -10%, var(--glow), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(120, 140, 180, 0.06), transparent 50%),
+    var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
 }
 
 .prose {
@@ -34,8 +83,9 @@ body {
 }
 
 .prose a {
-  color: #2563eb;
+  color: var(--accent);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 @keyframes inbox-progress {
@@ -49,4 +99,5 @@ body {
 
 .inbox-progress-bar {
   animation: inbox-progress 1.2s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }

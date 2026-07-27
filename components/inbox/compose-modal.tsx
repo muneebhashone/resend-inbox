@@ -158,7 +158,7 @@ export function ComposeModal({
 
   if (size === "minimized") {
     return (
-      <div className="fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-200 bg-zinc-900 text-white shadow-2xl dark:border-zinc-700">
+      <div className="fixed bottom-0 right-4 z-50 w-72 overflow-hidden rounded-t-xl border border-zinc-700/80 bg-zinc-800 text-zinc-100 shadow-2xl shadow-black/40">
         <button
           type="button"
           onClick={() => setSize("default")}
@@ -196,14 +196,14 @@ export function ComposeModal({
 
   return (
     <div
-      className={`fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl dark:border-zinc-700 dark:bg-zinc-950 ${
+      className={`fixed z-50 flex flex-col overflow-hidden border border-zinc-200 bg-white shadow-2xl shadow-black/10 dark:border-zinc-700/80 dark:bg-zinc-900 dark:shadow-black/50 ${
         expanded
           ? "inset-3 rounded-xl sm:inset-6"
           : "bottom-0 right-0 w-full rounded-t-xl sm:bottom-0 sm:right-4 sm:w-[560px] sm:rounded-t-xl"
       }`}
       style={expanded ? undefined : { maxHeight: "min(640px, calc(100dvh - 1rem))" }}
     >
-      <div className="flex shrink-0 items-center gap-2 bg-zinc-900 px-3 py-2 text-white dark:bg-zinc-800">
+      <div className="flex shrink-0 items-center gap-2 border-b border-zinc-800/50 bg-zinc-800 px-3 py-2 text-zinc-100">
         <h2 className="min-w-0 flex-1 truncate text-sm font-medium">
           {subject.trim() || "New Message"}
         </h2>
