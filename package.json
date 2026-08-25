@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "postbuild": "drizzle-kit push --force",
-    "start": "next start",
+    "dev": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env dev --path /resend-inbox -- next dev",
+    "build": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env prod --path /resend-inbox -- next build",
+    "postbuild": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env prod --path /resend-inbox -- drizzle-kit push --force",
+    "start": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env prod --path /resend-inbox -- next start",
     "lint": "eslint",
-    "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push --force",
-    "db:studio": "drizzle-kit studio"
+    "db:generate": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env dev --path /resend-inbox -- drizzle-kit generate",
+    "db:push": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env dev --path /resend-inbox -- drizzle-kit push --force",
+    "db:studio": "infisical run --projectId 98ac6ff9-be43-46a1-8fbf-131e217bccd3 --env dev --path /resend-inbox -- drizzle-kit studio"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.35",
