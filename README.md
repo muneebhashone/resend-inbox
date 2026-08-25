@@ -28,20 +28,13 @@ Built with Next.js 16, Turso (libSQL), and the Resend SDK.
 
 ```bash
 npm install
-cp .env.example .env.local
 ```
 
 ### 2. Configure environment variables
 
-```env
-RESEND_API_KEY=re_...
-RESEND_WEBHOOK_SECRET=whsec_...
-TURSO_DATABASE_URL=libsql://your-db.turso.io
-TURSO_AUTH_TOKEN=...
-INBOX_PASSWORD=your-secret-password
-SESSION_SECRET=random-32-char-string-at-least
-DEEPSEEK_API_KEY=sk-...
-```
+Store the required variables in Infisical under `/resend-inbox` (`dev` for
+local development and `prod` for production). The npm scripts inject them at
+runtime; do not create a local dotenv file.
 
 For local development without Turso, you can use:
 
@@ -81,7 +74,7 @@ ngrok http 3000
 
 1. Push the repo to GitHub
 2. Import the project in [Vercel](https://vercel.com)
-3. Add all environment variables from `.env.example`
+3. Configure the same variables in Vercel's encrypted environment settings
 4. Deploy
 5. Update the Resend webhook URL to your production domain
 
