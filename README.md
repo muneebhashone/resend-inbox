@@ -7,6 +7,7 @@ Built with Next.js 16, Turso (libSQL), and the Resend SDK.
 ## Features
 
 - Receive inbound emails via Resend webhooks
+- Suppress unauthenticated messages that spoof your own sending domain
 - Sync/backfill emails from the Resend Receiving API
 - Threaded conversation view
 - Reply, reply-all, and compose new emails
@@ -41,6 +42,7 @@ TURSO_AUTH_TOKEN=...
 INBOX_PASSWORD=your-secret-password
 SESSION_SECRET=random-32-char-string-at-least
 DEEPSEEK_API_KEY=sk-...
+INBOX_PROTECTED_DOMAINS=yourdomain.com
 ```
 
 For local development without Turso, you can use:
@@ -63,6 +65,10 @@ npm run db:push
    - Event: `email.received`
    - Copy the signing secret to `RESEND_WEBHOOK_SECRET`
 3. **Sending** — Use a verified `from` address on the same domain in Settings after first login.
+
+`INBOX_PROTECTED_DOMAINS` is a comma-separated list. Inbound messages claiming to
+come from one of these domains are suppressed unless Amazon SES reports an aligned
+DMARC pass. It defaults to `themuneebh.com` for this deployment.
 
 ### 5. Run locally
 
