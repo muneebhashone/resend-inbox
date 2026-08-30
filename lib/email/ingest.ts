@@ -4,8 +4,17 @@ import { emails, type EmailAttachment } from "@/lib/db/schema";
 import { getResend } from "@/lib/resend";
 import { computeThreadId } from "@/lib/threading";
 import { getHeader, makeSnippet } from "@/lib/utils";
+import { getInboundAuthenticationVerdict } from "./authentication";
 
-export async function ingestReceivedEmail(emailId: string): Promise<{ id: string; created: boolean }> {
+type IngestReceivedEmailResult = {
+  id: string | null;
+  created: boolean;
+  filtered: boolean;
+};
+
+export async function ingestReceivedEmail(
+  emailId: string,
+): Promise<IngestReceivedEmailResult> {
   const resend = getResend();
   const { data: email, error } = await resend.emails.receiving.get(emailId);
 
@@ -18,6 +27,28 @@ export async function ingestReceivedEmail(emailId: string): Promise<{ id: string
   });
 
   const headers = email.headers ?? {};
+  const authentication = getInboundAuthenticationVerdict({
+    from: email.from,
+    headers,
+  });
+
+  if (authentication.filter) {
+    if (existing && !existing.deletedAt) {
+      await db
+        .update(emails)
+        .set({ deletedAt: new Date() })
+        .where(eq(emails.id, existing.id));
+    }
+
+    console.warn("Filtered unauthenticated own-domain email", {
+      emailId,
+      domain: authentication.domain,
+      dmarc: authentication.dmarc,
+    });
+
+    return { id: existing?.id ?? null, created: false, filtered: true };
+  }
+
   const inReplyTo = getHeader(headers, "in-reply-to") ?? null;
   const references = getHeader(headers, "references") ?? null;
   const messageId = email.message_id;
@@ -57,20 +88,22 @@ export async function ingestReceivedEmail(emailId: string): Promise<{ id: string
 
   if (existing) {
     await db.update(emails).set(record).where(eq(emails.id, existing.id));
-    return { id: existing.id, created: false };
+    return { id: existing.id, created: false, filtered: false };
   }
 
   const id = crypto.randomUUID();
   await db.insert(emails).values({ id, ...record });
-  return { id, created: true };
+  return { id, created: true, filtered: false };
 }
 
 export async function syncReceivedEmails(): Promise<{
   synced: number;
+  filtered: number;
   total: number;
 }> {
   const resend = getResend();
   let synced = 0;
+  let filtered = 0;
   let after: string | undefined;
   let total = 0;
 
@@ -88,10 +121,11 @@ export async function syncReceivedEmails(): Promise<{
       total += 1;
       const result = await ingestReceivedEmail(item.id);
       if (result.created) synced += 1;
+      if (result.filtered) filtered += 1;
     }
 
     after = data.has_more ? data.data.at(-1)?.id : undefined;
   } while (after);
 
-  return { synced, total };
+  return { synced, filtered, total };
 }
