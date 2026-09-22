@@ -43,6 +43,8 @@ INBOX_PASSWORD=your-secret-password
 SESSION_SECRET=random-32-char-string-at-least
 DEEPSEEK_API_KEY=sk-...
 INBOX_PROTECTED_DOMAINS=yourdomain.com
+CAL_WEBHOOK_SECRET=your-cal-webhook-secret
+CAL_EVENT_TYPE_ID=your-30min-event-type-id
 ```
 
 For local development without Turso, you can use:
@@ -98,6 +100,24 @@ ngrok http 3000
 3. Click **Sync from Resend** to import existing received emails
 4. Select a thread to read and reply — your signature is appended automatically
 5. Use **Draft reply** or **Draft message** when composing to generate an editable AI draft (requires `DEEPSEEK_API_KEY`)
+
+### Local Codex inbox access
+
+The `resend-inbox` Codex skill uses `npm run inbox -- <command>` from this repository. Supply the live Turso credentials in the process environment. Sending and syncing also require `RESEND_API_KEY`; AI drafting requires `DEEPSEEK_API_KEY`. The command refuses to send without `--confirm`.
+
+```bash
+npm run inbox -- search 'from:client@example.com'
+npm run inbox -- thread <email-id>
+npm run inbox -- booking-status <cal-booking-uid>
+npm run inbox -- draft --reply <email-id> --instructions 'Focus on the architecture question'
+npm run inbox -- send --reply <email-id> --body-file /path/to/body.txt --confirm
+```
+
+### Personalised Cal.com booking welcome
+
+After deploying this version and pushing the database schema, set `CAL_WEBHOOK_SECRET` and `CAL_EVENT_TYPE_ID` in the inbox app's production environment. Find the numeric event type ID for `https://cal.com/themuneebh/30min` in Cal.com. In Cal.com Settings → Developer → Webhooks, create a subscription for that event type with the `Booking Created` trigger, URL `https://<your-inbox-host>/api/webhooks/cal`, the same secret, and the default payload (no custom template). Cal.com requires a public HTTPS subscriber URL.
+
+Only accepted bookings for that event type receive a welcome. The webhook checks Cal.com's signature before processing. The email uses booking answers to write a short personal acknowledgement; it falls back to a standard welcome when answers or AI generation are unavailable. Cal.com continues to send its own calendar confirmation. The inbox Settings must have a verified official-domain sender, such as `hello@themuneebh.com`. Repeated webhook deliveries are tracked in Turso and sent with a stable Resend idempotency key. An ambiguous send older than the idempotency window is recorded as `uncertain` for manual reconciliation.
 
 ## Scripts
 
