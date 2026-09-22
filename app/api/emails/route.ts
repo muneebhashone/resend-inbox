@@ -5,6 +5,7 @@ import { db } from "@/lib/db";
 import { emails } from "@/lib/db/schema";
 import { buildSearchFilterFromQuery } from "@/lib/search/build-filter";
 import type { InboxView } from "@/lib/types";
+import { parseJsonArray } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -12,11 +13,13 @@ export async function GET(request: Request) {
   const view = (searchParams.get("view") ?? "inbox") as InboxView;
 
   const viewFilter =
-    view === "starred"
-      ? and(eq(emails.isStarred, true), isNull(emails.deletedAt))
-      : view === "archived"
-        ? and(eq(emails.isArchived, true), isNull(emails.deletedAt))
-        : and(eq(emails.isArchived, false), isNull(emails.deletedAt));
+    view === "sent"
+      ? and(eq(emails.direction, "outbound"), isNull(emails.deletedAt))
+      : view === "starred"
+        ? and(eq(emails.isStarred, true), isNull(emails.deletedAt))
+        : view === "archived"
+          ? and(eq(emails.isArchived, true), isNull(emails.deletedAt))
+          : and(eq(emails.direction, "inbound"), eq(emails.isArchived, false), isNull(emails.deletedAt));
 
   const searchFilter = q ? buildSearchFilterFromQuery(q) : undefined;
 
@@ -82,6 +85,7 @@ export async function GET(request: Request) {
         id: latestEmail.id,
         subject: latestEmail.subject,
         from: latestEmail.from,
+        to: parseJsonArray(latestEmail.to),
         snippet: latestEmail.snippet,
         createdAt: latestEmail.createdAt.toISOString(),
         isRead: unreadCount === 0,

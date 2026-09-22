@@ -38,6 +38,7 @@ function formatDate(value: string) {
 
 const VIEWS: { id: InboxView; label: string }[] = [
   { id: "inbox", label: "Inbox" },
+  { id: "sent", label: "Sent" },
   { id: "starred", label: "Starred" },
   { id: "archived", label: "Archived" },
 ];
@@ -147,6 +148,8 @@ export function ThreadList({
                 ? "No starred conversations."
                 : view === "archived"
                   ? "No archived conversations."
+                  : view === "sent"
+                    ? "No sent emails yet."
                   : "No emails yet. Sync from Resend or wait for new inbound mail."}
           </p>
         ) : (
@@ -181,7 +184,7 @@ export function ThreadList({
                           : "font-semibold"
                       }`}
                     >
-                      {thread.from}
+                      {view === "sent" ? thread.to.join(", ") : thread.from}
                     </span>
                     <span className="flex shrink-0 items-center gap-1.5 text-xs text-zinc-500">
                       {thread.hasAttachments ? (

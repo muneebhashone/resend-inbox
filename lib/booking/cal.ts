@@ -55,9 +55,9 @@ export function standardWelcome(name: string, focus?: string): string {
   return [
     `Hi ${firstName},`,
     focus
-      ? `Thanks for booking a call. ${focus}`
-      : "Thanks for booking a call. I'm glad we'll have time to talk through what you're working on.",
-    "If there's anything useful for me to see beforehand, just reply here. Otherwise, we'll pick it up on the call.",
+      ? `Thanks for booking. ${focus}`
+      : "Thanks for booking. I look forward to hearing more about what you're working on.",
+    "If there's something I should read before the call, reply here.",
     "Speak soon,\nMuneeb",
   ].join("\n\n");
 }

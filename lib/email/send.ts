@@ -26,6 +26,7 @@ type SendEmailInput = {
   mode?: "reply" | "reply-all" | "compose" | "forward";
   idempotencyKey?: string;
   messageId?: string;
+  includeSignature?: boolean;
 };
 
 export async function sendEmail(input: SendEmailInput) {
@@ -36,7 +37,7 @@ export async function sendEmail(input: SendEmailInput) {
     throw new Error("Configure your from email in Settings before sending");
   }
 
-  const signature = normalizeBodyHtml(config.signatureHtml);
+  const signature = input.includeSignature === false ? "" : normalizeBodyHtml(config.signatureHtml);
   const body = bodyToEmailHtml(input.bodyHtml);
   const bodyHtml = signature ? `${body}<br/>${signature}` : body;
 
@@ -141,6 +142,7 @@ export async function sendEmail(input: SendEmailInput) {
   const saved = await db.query.emails.findFirst({
     where: eq(emails.resendId, data.id),
   });
+  if (!saved) throw new Error("Sent email was not saved in the inbox");
 
   if (originalEmailId) {
     await db
@@ -149,5 +151,5 @@ export async function sendEmail(input: SendEmailInput) {
       .where(eq(emails.id, originalEmailId));
   }
 
-  return { id: saved?.id ?? id, resendId: data.id };
+  return { id: saved.id, resendId: data.id };
 }
