@@ -24,6 +24,8 @@ type SendEmailInput = {
   bodyHtml: string;
   replyToEmailId?: string;
   mode?: "reply" | "reply-all" | "compose" | "forward";
+  idempotencyKey?: string;
+  messageId?: string;
 };
 
 export async function sendEmail(input: SendEmailInput) {
@@ -83,7 +85,7 @@ export async function sendEmail(input: SendEmailInput) {
     }
   }
 
-  const messageId = generateMessageId(config.fromEmail);
+  const messageId = input.messageId ?? generateMessageId(config.fromEmail);
   const from = config.fromName
     ? `${config.fromName} <${config.fromEmail}>`
     : config.fromEmail;
@@ -105,7 +107,7 @@ export async function sendEmail(input: SendEmailInput) {
     subject,
     html: bodyHtml,
     headers,
-  });
+  }, input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined);
 
   if (error || !data) {
     throw new Error(error?.message ?? "Failed to send email");
@@ -134,6 +136,10 @@ export async function sendEmail(input: SendEmailInput) {
     attachments: "[]",
     isRead: true,
     createdAt: new Date(),
+  }).onConflictDoNothing({ target: emails.resendId });
+
+  const saved = await db.query.emails.findFirst({
+    where: eq(emails.resendId, data.id),
   });
 
   if (originalEmailId) {
@@ -143,5 +149,5 @@ export async function sendEmail(input: SendEmailInput) {
       .where(eq(emails.id, originalEmailId));
   }
 
-  return { id, resendId: data.id };
+  return { id: saved?.id ?? id, resendId: data.id };
 }

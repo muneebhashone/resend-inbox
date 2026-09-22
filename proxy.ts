@@ -1,9 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { COOKIE_NAME, verifySessionToken } from "@/lib/auth";
 
-const publicPaths = ["/login", "/api/auth/login", "/api/webhooks/resend"];
+const publicPaths = ["/login", "/api/auth/login", "/api/webhooks/resend", "/api/webhooks/cal"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (publicPaths.some((path) => pathname.startsWith(path))) {

@@ -40,6 +40,15 @@ export const settings = sqliteTable("settings", {
   signatureHtml: text("signature_html").notNull().default(""),
 });
 
+export const bookingWelcomeEmails = sqliteTable("booking_welcome_emails", {
+  bookingUid: text("booking_uid").primaryKey(),
+  status: text("status").notNull().$type<"pending" | "sent" | "uncertain">(),
+  bodyText: text("body_text"),
+  claimedAt: integer("claimed_at", { mode: "timestamp_ms" }).notNull(),
+  sendAttemptAt: integer("send_attempt_at", { mode: "timestamp_ms" }),
+  resendId: text("resend_id"),
+});
+
 export type Email = typeof emails.$inferSelect;
 export type NewEmail = typeof emails.$inferInsert;
 export type Settings = typeof settings.$inferSelect;
