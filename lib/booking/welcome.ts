@@ -34,7 +34,7 @@ async function buildBody(booking: BookingWelcome): Promise<string> {
   }
 }
 
-export async function sendBookingWelcome(booking: BookingWelcome): Promise<"sent" | "duplicate" | "busy" | "uncertain"> {
+export async function sendBookingWelcome(booking: BookingWelcome, bodyOverride?: string): Promise<"sent" | "duplicate" | "busy" | "uncertain"> {
   const now = new Date();
   const inserted = await db.insert(bookingWelcomeEmails).values({
     bookingUid: booking.uid,
@@ -66,7 +66,7 @@ export async function sendBookingWelcome(booking: BookingWelcome): Promise<"sent
     record = claimed[0];
   }
 
-  const bodyText = record.bodyText ?? await buildBody(booking);
+  const bodyText = record.bodyText ?? bodyOverride ?? await buildBody(booking);
   if (!record.bodyText) {
     await db.update(bookingWelcomeEmails).set({ bodyText })
       .where(eq(bookingWelcomeEmails.bookingUid, booking.uid));
@@ -83,6 +83,7 @@ export async function sendBookingWelcome(booking: BookingWelcome): Promise<"sent
     bodyHtml: plainTextToHtml(bodyText),
     idempotencyKey: `cal-welcome/${hash}`,
     messageId: `<cal-welcome-${hash}@${settings.fromEmail.split("@")[1]}>`,
+    includeSignature: false,
   });
   await db.update(bookingWelcomeEmails).set({ status: "sent", resendId: sent.resendId })
     .where(eq(bookingWelcomeEmails.bookingUid, booking.uid));

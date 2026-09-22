@@ -29,13 +29,14 @@ export type Email = {
   createdAt: string;
 };
 
-export type InboxView = "inbox" | "starred" | "archived";
+export type InboxView = "inbox" | "sent" | "starred" | "archived";
 
 export type ThreadSummary = {
   threadId: string;
   id: string;
   subject: string;
   from: string;
+  to: string[];
   snippet: string;
   createdAt: string;
   isRead: boolean;
